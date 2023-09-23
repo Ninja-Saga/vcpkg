@@ -5,16 +5,17 @@ vcpkg_from_github(
     SHA512 1C3C9560BC1F8CBDF9CDFD5593233020D8403CE707D8B129FED82080CB806E82E83CBB839BEA64D53B022A58400F817A54FFB30099A0D7D7B300E8D0103F483B
 )
 
-vcpkg_cmake_configure(
+vcpkg_configure_cmake(
     SOURCE_PATH "${SOURCE_PATH}"
+    PREFER_NINJA
     OPTIONS
         -DRING_SPAN_LITE_OPT_BUILD_TESTS=OFF
         -DRING_SPAN_LITE_OPT_BUILD_EXAMPLES=OFF
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
-vcpkg_cmake_config_fixup(
+vcpkg_fixup_cmake_targets(
     CONFIG_PATH "lib/cmake/${PORT}"
 )
 

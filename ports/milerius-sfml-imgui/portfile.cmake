@@ -9,7 +9,6 @@ vcpkg_from_github(
     PATCHES
         FixFindPackageIssue.patch
         cpp11.patch
-        fix-imgui-dependency.patch
 )
 
 vcpkg_cmake_configure(

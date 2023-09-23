@@ -1,17 +1,6 @@
 {
   "name": "lzokay",
-  "version-date": "2020-07-30",
-  "port-version": 2,
+  "version-string": "2020-07-30",
   "description": "lzokay – MIT licensed C++ implementation of LZO compression/decompression algorithm",
-  "homepage": "https://github.com/jackoalan/lzokay",
-  "dependencies": [
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    },
-    {
-      "name": "vcpkg-cmake-config",
-      "host": true
-    }
-  ]
+  "homepage": "https://github.com/jackoalan/lzokay"
 }

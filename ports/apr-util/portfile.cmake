@@ -2,28 +2,31 @@ vcpkg_download_distfile(ARCHIVE
     URLS "https://archive.apache.org/dist/apr/apr-util-1.6.1.tar.bz2"
     FILENAME "apr-util-1.6.1.tar.bz2"
     SHA512 40eff8a37c0634f7fdddd6ca5e596b38de15fd10767a34c30bbe49c632816e8f3e1e230678034f578dd5816a94f246fb5dfdf48d644829af13bf28de3225205d
-)
 
-vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
-FEATURES
-    crypto APU_HAVE_CRYPTO
-    crypto CMAKE_REQUIRE_FIND_PACKAGE_OpenSSL
 )
 
 if(VCPKG_TARGET_IS_WINDOWS)
-    vcpkg_extract_source_archive(
-        SOURCE_PATH
+    vcpkg_extract_source_archive_ex(
+        OUT_SOURCE_PATH SOURCE_PATH
         ARCHIVE "${ARCHIVE}"
         PATCHES
             use-vcpkg-expat.patch
             apr.patch
-            unglue.patch
     )
+
+    if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
+      set(APU_DECLARE_EXPORT ON)
+      set(APU_DECLARE_STATIC OFF)
+    else()
+      set(APU_DECLARE_EXPORT OFF)
+      set(APU_DECLARE_STATIC ON)
+    endif()
 
     vcpkg_cmake_configure(
       SOURCE_PATH "${SOURCE_PATH}"
       OPTIONS
-        ${FEATURE_OPTIONS}
+        -DAPU_DECLARE_EXPORT=${APU_DECLARE_EXPORT}
+        -DAPU_DECLARE_STATIC=${APU_DECLARE_STATIC}
       OPTIONS_DEBUG
         -DDISABLE_INSTALL_HEADERS=ON
     )
@@ -31,44 +34,19 @@ if(VCPKG_TARGET_IS_WINDOWS)
     vcpkg_cmake_install()
     vcpkg_copy_pdbs()
 
-    # Upstream include/apu.h.in has:
-    # ```
-    #elif defined(APU_DECLARE_STATIC)
-    #define APU_DECLARE(type)            type __stdcall
-    #define APU_DECLARE_NONSTD(type)     type __cdecl
-    #define APU_DECLARE_DATA
-    #elif defined(APU_DECLARE_EXPORT)
-    #define APU_DECLARE(type)            __declspec(dllexport) type __stdcall
-    #define APU_DECLARE_NONSTD(type)     __declspec(dllexport) type __cdecl
-    #define APU_DECLARE_DATA             __declspec(dllexport)
-    #else
-    #define APU_DECLARE(type)            __declspec(dllimport) type __stdcall
-    #define APU_DECLARE_NONSTD(type)     __declspec(dllimport) type __cdecl
-    #define APU_DECLARE_DATA             __declspec(dllimport)
-    #endif
-    # ```
-    # When building, BUILD_SHARED_LIBS sets APU_DECLARE_STATIC to 0 and APU_DECLARE_EXPORT to 1
-    # Not BUILD_SHARED_LIBS sets APU_DECLARE_STATIC to 1 and APU_DECLARE_EXPORT to 0
-    # When consuming APU_DECLARE_EXPORT is always 0 (assumed), so we need only embed the static or not setting
-    # into the resulting headers:
+    file(READ ${CURRENT_PACKAGES_DIR}/include/apu.h  APU_H)
     if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
-        vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/apu.h" "defined(APU_DECLARE_STATIC)" "0")
+      string(REPLACE "defined(APU_DECLARE_EXPORT)" "1" APU_H "${APU_H}")
     else()
-        vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/apu.h" "defined(APU_DECLARE_STATIC)" "1")
+      string(REPLACE "defined(APU_DECLARE_STATIC)" "1" APU_H "${APU_H}")
     endif()
-else()
-    vcpkg_extract_source_archive(
-        SOURCE_PATH
-        ARCHIVE "${ARCHIVE}"
-    )
+    file(WRITE ${CURRENT_PACKAGES_DIR}/include/apu.h "${APU_H}")
 
-    if ("crypto" IN_LIST FEATURES)
-        set(CRYPTO_OPTIONS 
-            "--with-crypto=yes"
-            "--with-openssl=${CURRENT_INSTALLED_DIR}")
-    else()
-        set(CRYPTO_OPTIONS "--with-crypto=no")
-    endif()
+else()
+    vcpkg_extract_source_archive_ex(
+        OUT_SOURCE_PATH SOURCE_PATH
+        ARCHIVE ${ARCHIVE} 
+    )
 
     # To cross-compile you will need a triplet file that locates the tool chain and sets --host and --cache parameters of "./configure".
     # The ${VCPKG_PLATFORM_TOOLSET}.cache file must have been generated on the targeted host using "./configure -C".
@@ -85,17 +63,18 @@ else()
 
     vcpkg_configure_make(
         SOURCE_PATH "${SOURCE_PATH}"
-        OPTIONS
+        OPTIONS 
             "--prefix=${CURRENT_INSTALLED_DIR}"
-            ${CRYPTO_OPTIONS}
             "--with-apr=${CURRENT_INSTALLED_DIR}/tools/apr"
-            "--with-expat=${CURRENT_INSTALLED_DIR}"
+            "--with-openssl=${CURRENT_INSTALLED_DIR}"
+            "-with-expat=${CURRENT_INSTALLED_DIR}"
             "${CONFIGURE_PARAMETER_1}"
             "${CONFIGURE_PARAMETER_2}"
             "${CONFIGURE_PARAMETER_3}"
     )
 
     vcpkg_install_make()
+
     vcpkg_fixup_pkgconfig()
     vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/tools/apr-util/bin/apu-1-config" "${CURRENT_INSTALLED_DIR}" "`dirname $0`/../../..")
     vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/tools/apr-util/bin/apu-1-config" "${CURRENT_BUILDTREES_DIR}" "not/existing")
@@ -103,6 +82,8 @@ else()
       vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/tools/apr-util/debug/bin/apu-1-config" "${CURRENT_INSTALLED_DIR}" "`dirname $0`/../../../..")
       vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/tools/apr-util/debug/bin/apu-1-config" "${CURRENT_BUILDTREES_DIR}" "not/existing")
     endif()
+
 endif()
 
+# Handle copyright
 file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)

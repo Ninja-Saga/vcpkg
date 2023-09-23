@@ -110,7 +110,7 @@ set(OPTIONS_REL "${OPTIONS} is_debug=false symbol_level=0")
 set(DEFINITIONS_DBG ${DEFINITIONS})
 set(DEFINITIONS_REL ${DEFINITIONS})
 
-vcpkg_gn_configure(
+vcpkg_configure_gn(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS_DEBUG "${OPTIONS_DBG}"
     OPTIONS_RELEASE "${OPTIONS_REL}"
@@ -130,7 +130,7 @@ if(WIN32)
     list(APPEND TARGETS base/win:pe_image)
 endif()
 
-vcpkg_gn_install(
+vcpkg_install_gn(
     SOURCE_PATH "${SOURCE_PATH}"
     TARGETS ${TARGETS}
 )

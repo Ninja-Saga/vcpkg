@@ -1,10 +1,9 @@
 {
   "name": "crashrpt",
   "version": "1.4.3",
-  "port-version": 3,
+  "port-version": 2,
   "description": "A crash reporting system for Windows applications",
   "homepage": "http://crashrpt.sourceforge.net/",
-  "license": "BSD-3-Clause",
   "supports": "!osx & !linux & !uwp & (x86 | x64)",
   "dependencies": [
     "dbghelp",
@@ -13,10 +12,6 @@
     "libpng",
     "libtheora",
     "tinyxml",
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    },
     "wtl",
     "zlib"
   ],

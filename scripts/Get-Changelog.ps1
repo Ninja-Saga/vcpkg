@@ -405,7 +405,7 @@ $output = @"
 vcpkg ($($StartDate.ToString('yyyy.MM.dd')) - $((($EndDate).AddSeconds(-1)).ToString('yyyy.MM.dd')))
 ---
 #### Total port count:
-#### Total port count per triplet (tested) (tentative): LINK TO BUILD
+#### Total port count per triplet (tested):
 |triplet|ports available|
 |---|---|
 |x86-windows|NUM|
@@ -414,7 +414,7 @@ vcpkg ($($StartDate.ToString('yyyy.MM.dd')) - $((($EndDate).AddSeconds(-1)).ToSt
 |x64-windows-static-md|NUM|
 |x64-uwp|NUM|
 |arm64-windows|NUM|
-|arm64-uwp|NUM|
+|arm-uwp|NUM|
 |**x64-osx**|NUM|
 |**x64-linux**|NUM|
 
@@ -424,12 +424,12 @@ if ($UpdatedDocumentation) {
     $output += @"
 #### The following documentation has been updated:
 
-$(-join ($UpdatedDocumentation | Sort-Object -Property 'Path' | ForEach-Object {
+$(-join ($UpdatedDocumentation | ForEach-Object {
     $PathWithoutDocs =  ([string]$_.Path).Remove(0, 5) # 'docs/'
-    "- [{0}](https://github.com/microsoft/vcpkg/blob/master/docs/{0}){1}`n" -f $PathWithoutDocs, ($(if ($_.New) { ' ***[NEW]***' } else { '' }))
+    "- [{0}]({0}){1}`n" -f $PathWithoutDocs, $_.Path, ($(if ($_.New) { ' ***[NEW]***' } else { '' }))
 
     $_.Pulls | ForEach-Object {
-        "    - {0} (by @{1}, in #{2})`n" -f $_.title, $_.user.login, $_.number
+        "    - [(#{0})]({1}) {2} (by @{3})`n" -f $_.number, $_.html_url, $_.title, $_.user.login
     }
 }))
 
@@ -443,13 +443,13 @@ if ($NewPorts) {
 
 |port|version|
 |---|---|
-$(-join ($NewPorts | Sort-Object -Property 'Port' | ForEach-Object {
+$(-join ($NewPorts | ForEach-Object {
     "|[{0}]({1})" -f $_.Port, $_.Pulls[0].html_url
 
     if ($_.Pulls.Length -gt 1 ) {
         '<sup>'
         $_.Pulls[1..($_.Pulls.Length - 1)] | ForEach-Object {
-            " #{0}" -f $_.number
+            "[#{0}]({1})" -f $_.number, $_.html_url
         }
         '</sup>'
     }
@@ -466,13 +466,13 @@ if ($ChangedPorts) {
 <details>
 <summary><b>The following $($ChangedPorts.Length) ports have been updated:</b></summary>
 
-$(-join ($ChangedPorts | Sort-Object -Property 'Port' | ForEach-Object {
+$(-join ($ChangedPorts | ForEach-Object {
     "- {0} ``{1}#{2}``" -f $_.Port, $_.Version.Begin, $_.Version.BeginPort
     ' -> '
     "``{0}#{1}```n" -f $_.Version.End, $_.Version.EndPort
 
     $_.Pulls | ForEach-Object {
-        "    - {0} (by @{1}, in #{2})`n" -f $_.title, $_.user.login, $_.number
+        "    - [(#{0})]({1}) {2} (by @{3})`n" -f $_.number, $_.html_url, $_.title, $_.user.login
     }
 }))
 </details>
@@ -486,12 +486,16 @@ if ($UpdatedInfrastructure) {
 <summary>The following additional changes have been made to vcpkg's infrastructure:</summary>
 
 $(-join ($UpdatedInfrastructure | ForEach-Object {
-    "- {0} (by @{1}, in #{2})`n" -f $_.title, $_.user.login, $_.number
+    "- [(#{0})]({1}) {2} (by @{3})`n" -f $_.number, $_.html_url, $_.title, $_.user.login
 }))
 </details>
 
 "@
 }
+
+$output += @"
+-- vcpkg team vcpkg@microsoft.com $(Get-Date -UFormat "%a, %d %B %T %Z00")
+"@
 
 Set-Content -Value $Output -Path $OutFile
 

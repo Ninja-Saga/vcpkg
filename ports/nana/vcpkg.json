@@ -1,7 +1,7 @@
 {
   "name": "nana",
-  "version": "1.7.4",
-  "port-version": 4,
+  "version-string": "1.7.4",
+  "port-version": 2,
   "description": "Cross-platform library for GUI programming in modern C++ style.",
   "homepage": "https://github.com/cnjinhao/nana",
   "dependencies": [
@@ -14,14 +14,6 @@
       "platform": "!uwp & !windows & !mingw"
     },
     "libjpeg-turbo",
-    "libpng",
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    },
-    {
-      "name": "vcpkg-cmake-config",
-      "host": true
-    }
+    "libpng"
   ]
 }

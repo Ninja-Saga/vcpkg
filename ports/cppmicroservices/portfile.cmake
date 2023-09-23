@@ -10,19 +10,20 @@ vcpkg_from_github(
         fix-warning-c4834.patch
 )
 
-vcpkg_cmake_configure(
+vcpkg_configure_cmake(
     SOURCE_PATH "${SOURCE_PATH}"
+    PREFER_NINJA
     OPTIONS
         -DTOOLS_INSTALL_DIR:STRING=tools/cppmicroservices
         -DAUXILIARY_INSTALL_DIR:STRING=share/cppmicroservices
         -DUS_USE_SYSTEM_GTEST=TRUE
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 
-vcpkg_cmake_config_fixup()
+vcpkg_fixup_cmake_targets()
 
 # Handle copyright
 file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)

@@ -14,19 +14,20 @@ vcpkg_from_github(
         gsl-4_0_0.patch
 )
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
-        "-DGSL_INCLUDE_DIR=${CURRENT_INSTALLED_DIR}/include"
+        -DGSL_INCLUDE_DIR=${CURRENT_INSTALLED_DIR}/include
         -DBUILD_TESTING=False
 )
-vcpkg_cmake_install()
-vcpkg_cmake_config_fixup()
+vcpkg_install_cmake()
+vcpkg_fixup_cmake_targets()
 
-file(INSTALL        "${SOURCE_PATH}/LICENSE"
-     DESTINATION    "${CURRENT_PACKAGES_DIR}/share/${PORT}"
+file(INSTALL        ${SOURCE_PATH}/LICENSE
+     DESTINATION    ${CURRENT_PACKAGES_DIR}/share/${PORT}
      RENAME         copyright
 )
 vcpkg_copy_pdbs()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)

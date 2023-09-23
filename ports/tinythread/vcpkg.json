@@ -1,13 +1,7 @@
 {
   "name": "tinythread",
-  "version": "1.1",
-  "port-version": 6,
+  "version-string": "1.1",
+  "port-version": 4,
   "description": "Implements a fairly compatible subset of the C++11 thread management classes",
-  "homepage": "https://tinythreadpp.bitsnbites.eu/",
-  "dependencies": [
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    }
-  ]
+  "homepage": "https://tinythreadpp.bitsnbites.eu/"
 }

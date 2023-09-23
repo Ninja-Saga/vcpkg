@@ -6,16 +6,18 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-vcpkg_cmake_configure(
-  SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+  SOURCE_PATH ${SOURCE_PATH}
+  PREFER_NINJA
   OPTIONS
     -DRIFFCPP_INSTALL_EXAMPLE=OFF
 )
 
-vcpkg_cmake_install()
-vcpkg_cmake_config_fixup()
+vcpkg_install_cmake()
+vcpkg_fixup_cmake_targets()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(COPY ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/riffcpp)
+file(RENAME ${CURRENT_PACKAGES_DIR}/share/riffcpp/LICENSE ${CURRENT_PACKAGES_DIR}/share/riffcpp/copyright)

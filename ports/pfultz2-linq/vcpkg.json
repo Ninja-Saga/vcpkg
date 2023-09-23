@@ -1,7 +1,7 @@
 {
   "name": "pfultz2-linq",
-  "version-date": "2019-05-14",
-  "port-version": 3,
+  "version-string": "2019-05-14",
+  "port-version": 1,
   "description": "Linq for list comprehension in C++",
   "dependencies": [
     "boost-fusion",
@@ -13,14 +13,6 @@
     "boost-static-assert",
     "boost-type-traits",
     "boost-unordered",
-    "boost-utility",
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    },
-    {
-      "name": "vcpkg-cmake-config",
-      "host": true
-    }
+    "boost-utility"
   ]
 }

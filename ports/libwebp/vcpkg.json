@@ -1,25 +1,15 @@
 {
   "name": "libwebp",
-  "version": "1.3.2",
+  "version": "1.2.1",
   "description": "WebP codec: library to encode and decode images in WebP format",
   "homepage": "https://github.com/webmproject/libwebp",
-  "license": "BSD-3-Clause",
   "dependencies": [
     {
       "name": "libwebp",
-      "default-features": false,
       "features": [
         "unicode"
       ],
       "platform": "windows"
-    },
-    {
-      "name": "libwebp",
-      "default-features": false,
-      "features": [
-        "simd"
-      ],
-      "platform": "osx & x64"
     },
     {
       "name": "vcpkg-cmake",
@@ -31,7 +21,6 @@
     }
   ],
   "default-features": [
-    "libwebpmux",
     "nearlossless",
     "simd"
   ],
@@ -45,11 +34,9 @@
             "anim",
             "cwebp",
             "dwebp",
-            "extras",
             "gif2webp",
             "img2webp",
             "info",
-            "libwebpmux",
             "mux",
             "nearlossless",
             "simd"
@@ -58,71 +45,56 @@
         {
           "name": "libwebp",
           "features": [
-            "vwebp"
+            "extras"
           ],
-          "platform": "!osx & !static"
+          "platform": "!osx"
         },
         {
           "name": "libwebp",
           "features": [
             "vwebp-sdl"
           ],
-          "platform": "!osx & !static & !uwp"
+          "platform": "!osx"
         }
       ]
     },
     "anim": {
       "description": "Build animation utilities.",
       "dependencies": [
-        "giflib",
-        "libjpeg-turbo",
-        "libpng",
         {
           "name": "libwebp",
-          "default-features": false,
           "features": [
             "img2webp",
             "mux"
           ]
-        },
-        "tiff"
+        }
       ]
     },
     "cwebp": {
-      "description": "Build the cwebp command line tool.",
-      "dependencies": [
-        "libjpeg-turbo",
-        "libpng",
-        "tiff"
-      ]
+      "description": "Build the cwebp command line tool."
     },
     "dwebp": {
-      "description": "Build the dwebp command line tool.",
-      "dependencies": [
-        "libjpeg-turbo",
-        "libpng",
-        "tiff"
-      ]
+      "description": "Build the dwebp command line tool."
     },
     "extras": {
-      "description": "Build extras. (Doesn't include vwebp-sdl.)",
+      "description": "Build extras.",
       "dependencies": [
-        "libjpeg-turbo",
-        "libpng",
-        "tiff"
+        {
+          "name": "libwebp",
+          "features": [
+            "vwebp"
+          ]
+        },
+        {
+          "name": "sdl1",
+          "platform": "windows"
+        }
       ]
     },
     "gif2webp": {
       "description": "Build the gif2webp conversion tool.",
       "dependencies": [
-        "giflib",
-        {
-          "name": "libwebp",
-          "default-features": false,
-          "features": [
-            "libwebpmux"
-          ]
-        }
+        "giflib"
       ]
     },
     "img2webp": {
@@ -130,13 +102,6 @@
       "dependencies": [
         "libjpeg-turbo",
         "libpng",
-        {
-          "name": "libwebp",
-          "default-features": false,
-          "features": [
-            "libwebpmux"
-          ]
-        },
         "tiff"
       ]
     },
@@ -144,31 +109,10 @@
       "description": "Build the webpinfo command line tool."
     },
     "libbwebpmux": {
-      "description": "Obsolete, use feature libwebpmux instead.",
-      "dependencies": [
-        {
-          "name": "libwebp",
-          "default-features": false,
-          "features": [
-            "libwebpmux"
-          ]
-        }
-      ]
-    },
-    "libwebpmux": {
       "description": "Build the libwebpmux library"
     },
     "mux": {
-      "description": "Build the webpmux command line tool.",
-      "dependencies": [
-        {
-          "name": "libwebp",
-          "default-features": false,
-          "features": [
-            "libwebpmux"
-          ]
-        }
-      ]
+      "description": "Build the webpmux command line tool."
     },
     "nearlossless": {
       "description": "Enable near-lossless encoding"
@@ -184,24 +128,27 @@
     },
     "vwebp": {
       "description": "Build the vwebp viewer tool.",
-      "supports": "!osx & !static",
       "dependencies": [
-        "freeglut",
+        {
+          "name": "freeglut",
+          "platform": "!osx"
+        },
         "opengl"
       ]
     },
     "vwebp-sdl": {
-      "description": "Build the vwebp viewer tool for SDL.",
+      "description": "Build the vwebp viewer tool.",
       "dependencies": [
         {
           "name": "libwebp",
-          "default-features": false,
           "features": [
-            "extras",
             "vwebp"
           ]
         },
-        "sdl1"
+        {
+          "name": "sdl1",
+          "platform": "windows"
+        }
       ]
     }
   }

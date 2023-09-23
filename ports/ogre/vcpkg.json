@@ -1,18 +1,13 @@
 {
   "name": "ogre",
-  "version": "14.0.1",
-  "port-version": 1,
+  "version": "1.12.9",
+  "port-version": 7,
   "description": "3D Object-Oriented Graphics Rendering Engine",
   "homepage": "https://github.com/OGRECave/ogre",
   "license": "MIT",
-  "supports": "!uwp",
   "dependencies": [
     "pugixml",
-    {
-      "name": "sdl2",
-      "platform": "!android"
-    },
-    "stb",
+    "sdl2",
     {
       "name": "vcpkg-cmake",
       "host": true
@@ -27,55 +22,34 @@
     "assimp",
     "freeimage",
     "overlay",
-    "zip"
+    "zziplib"
   ],
   "features": {
     "assimp": {
-      "description": "Build with assimp support",
+      "description": "Use assimp",
       "dependencies": [
         "assimp"
       ]
     },
-    "bullet": {
-      "description": "Build with bullet physics support",
-      "dependencies": [
-        "bullet3"
-      ]
-    },
     "csharp": {
-      "description": "Build csharp bindings",
-      "supports": "!static & !android & !ios & !emscripten"
+      "description": "Build csharp bindings"
     },
     "d3d9": {
-      "description": "Build Direct3D9 RenderSystem",
-      "supports": "windows"
+      "description": "Build Direct3D9 RenderSystem"
     },
     "freeimage": {
-      "description": "Build with FreeImage support (no effect for Emscripten)",
+      "description": "Build with FreeImage support",
       "dependencies": [
-        {
-          "name": "freeimage",
-          "platform": "!emscripten"
-        }
+        "freeimage"
       ]
     },
     "java": {
-      "description": "Build Java (JNI) bindings",
-      "supports": "!static & !android & !ios & !emscripten"
-    },
-    "openexr": {
-      "description": "Build with OpenEXR support",
-      "dependencies": [
-        "openexr"
-      ]
+      "description": "Build Java (JNI) bindings"
     },
     "overlay": {
       "description": "Build overlay component",
       "dependencies": [
-        {
-          "name": "freetype",
-          "default-features": false
-        },
+        "freetype",
         {
           "name": "imgui",
           "features": [
@@ -86,7 +60,6 @@
     },
     "python": {
       "description": "Build Python bindings",
-      "supports": "!static & !android & !ios & !emscripten",
       "dependencies": [
         "python3"
       ]
@@ -94,23 +67,10 @@
     "strict": {
       "description": "Force Ogre resource manager to be strict with group names and resource names"
     },
-    "tools": {
-      "description": "Build tools",
-      "supports": "!android & !emscripten"
-    },
-    "zip": {
-      "description": "Build ZIP archive support"
-    },
     "zziplib": {
-      "description": "Obsolete, use zip feature instead",
+      "description": "Build with zziplib support (GPL)",
       "dependencies": [
-        {
-          "name": "ogre",
-          "default-features": false,
-          "features": [
-            "zip"
-          ]
-        }
+        "zziplib"
       ]
     }
   }

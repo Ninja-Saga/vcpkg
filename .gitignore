@@ -10,7 +10,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-/vcpkg.json
 /vcpkg-configuration.json
 
 # fuzzing
@@ -286,7 +285,6 @@ __pycache__/
 /build*/
 /downloads/
 /installed*/
-/vcpkg_installed*/
 /packages/
 /scripts/buildsystems/tmp/
 #ignore custom triplets

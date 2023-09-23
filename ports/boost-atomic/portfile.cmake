@@ -3,18 +3,22 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO boostorg/atomic
-    REF boost-1.83.0
-    SHA512 d6ee15758d9de6c64e9bb307e3b9a5a9aea6d4555be2df78c8ed8089d9da75926f6ec376c2917fbb8c2f985f23b0b926b39fb2d02921c443a83edb77e0455996
+    REF boost-1.78.0
+    SHA512 a6eba43c7038228fa7ce537b05429e263397bc914235d9ad9aa47badce5455f4905e15e5f1979c19088b47faca3091bd0dfcdb017290f796d34a36b682592345
     HEAD_REF master
+    PATCHES 0001-fix-compilation-for-uwp.patch
 )
 
-vcpkg_replace_string("${SOURCE_PATH}/build/Jamfile.v2"
+file(READ "${SOURCE_PATH}/build/Jamfile.v2" _contents)
+string(REPLACE
     "project.load [ path.join [ path.make $(here:D) ] ../../config/checks/architecture ]"
     "project.load [ path.join [ path.make $(here:D) ] ../config/checks/architecture ]"
-)
+    _contents "${_contents}")
+file(WRITE "${SOURCE_PATH}/build/Jamfile.v2" "${_contents}")
 file(COPY "${CURRENT_INSTALLED_DIR}/share/boost-config/checks" DESTINATION "${SOURCE_PATH}/config")
-#Make sure to keep this line when updating boost.
-file(INSTALL "${SOURCE_PATH}/config/has_synchronization_lib.cpp" DESTINATION "${CURRENT_PACKAGES_DIR}/share/boost-atomic")
+if(NOT DEFINED CURRENT_HOST_INSTALLED_DIR)
+    message(FATAL_ERROR "boost-atomic requires a newer version of vcpkg in order to build.")
+endif()
 include(${CURRENT_HOST_INSTALLED_DIR}/share/boost-build/boost-modular-build.cmake)
 boost_modular_build(SOURCE_PATH ${SOURCE_PATH})
 include(${CURRENT_INSTALLED_DIR}/share/boost-vcpkg-helpers/boost-modular-headers.cmake)

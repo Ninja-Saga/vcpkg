@@ -14,7 +14,6 @@ set(HEADERS
     libexif/exif-data-type.h
     libexif/exif-entry.h
     libexif/exif-format.h
-    libexif/exif-gps-ifd.h
     libexif/exif-ifd.h
     libexif/exif-loader.h
     libexif/exif-log.h
@@ -32,7 +31,6 @@ set(SOURCES
     libexif/exif-data.c
     libexif/exif-entry.c
     libexif/exif-format.c
-    libexif/exif-gps-ifd.c
     libexif/exif-ifd.c
     libexif/exif-loader.c
     libexif/exif-log.c
@@ -40,18 +38,6 @@ set(SOURCES
     libexif/exif-mnote-data.c
     libexif/exif-tag.c
     libexif/exif-utils.c
-)
-
-set(HEADERS_APPLE
-    libexif/apple/exif-mnote-data-apple.h
-    libexif/apple/mnote-apple-entry.h
-    libexif/apple/mnote-apple-tag.h
-)
-
-set(SOURCES_APPLE
-    libexif/apple/exif-mnote-data-apple.c
-    libexif/apple/mnote-apple-entry.c
-    libexif/apple/mnote-apple-tag.c
 )
 
 set(HEADERS_CANON
@@ -108,7 +94,6 @@ endif()
 
 add_library(libexif
     ${SOURCES} 
-    ${SOURCES_APPLE}
     ${SOURCES_CANON} 
     ${SOURCES_FUJI} 
     ${SOURCES_OLYMPUS}
@@ -151,7 +136,6 @@ install(
 )
 
 install(FILES ${HEADERS}         DESTINATION include/libexif)
-install(FILES ${HEADERS_APPLE}   DESTINATION include/libexif/apple)
 install(FILES ${HEADERS_CANON}   DESTINATION include/libexif/canon)
 install(FILES ${HEADERS_FUJI}    DESTINATION include/libexif/fuji)
 install(FILES ${HEADERS_OLYMPUS} DESTINATION include/libexif/olympus)

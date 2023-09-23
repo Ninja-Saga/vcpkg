@@ -1,7 +1,8 @@
 function(install_autopoint)
     # variables for configuring autopoint.in
     set(PACKAGE "gettext-tools")
-    set(ARCHIVE_VERSION "${VERSION}")
+    set(VERSION "${GETTEXT_VERSION}")
+    set(ARCHIVE_VERSION "${GETTEXT_VERSION}")
     set(ARCHIVE_FORMAT "dirgz")
     set(bindir [[${prefix}/tools/gettext/bin]])
     set(datadir [[${datarootdir}]])

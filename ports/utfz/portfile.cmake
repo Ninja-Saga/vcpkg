@@ -6,14 +6,16 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
 # Copy the include file
-file(COPY "${SOURCE_PATH}/utfz.h" DESTINATION "${CURRENT_PACKAGES_DIR}/include")
+file(COPY ${SOURCE_PATH}/utfz.h DESTINATION ${CURRENT_PACKAGES_DIR}/include)
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/license" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(COPY ${SOURCE_PATH}/license DESTINATION ${CURRENT_PACKAGES_DIR}/share/utfz)
+file(RENAME ${CURRENT_PACKAGES_DIR}/share/utfz/license ${CURRENT_PACKAGES_DIR}/share/utfz/copyright)

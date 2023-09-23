@@ -1,15 +1,15 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO zlib-ng/zlib-ng
-    REF "${VERSION}"
-    SHA512 cb987c0b20a11fca5361dce94e53dead7364e739a984545c38ad4bf0c7fedd83d5d62530d979eca2182da88d7507a9bec8d3f5abff41e92ab5a63ac61001502e
-    HEAD_REF develop
+    REF 2.0.5
+    SHA512 a643089a8189bf8bd24d679b84f07ae14932b4d88b88e94c44cca23350d6a9bbdaa411822d3651c2b0bf79f30c9f99514cc252cf9e9ab0b3a840540206466654
+    HEAD_REF master
 )
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
-        "-DZLIB_FULL_VERSION=${ZLIB_FULL_VERSION}"
+        -DZLIB_FULL_VERSION=2.0.3
         -DZLIB_ENABLE_TESTS=OFF
         -DWITH_NEW_STRATEGIES=ON
     OPTIONS_RELEASE
@@ -22,4 +22,6 @@ vcpkg_fixup_pkgconfig()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share"
                     "${CURRENT_PACKAGES_DIR}/debug/include"
 )
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE.md")
+file(INSTALL "${SOURCE_PATH}/LICENSE.md"
+     DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright
+)

@@ -1,6 +1,6 @@
 {
   "name": "imgui",
-  "version": "1.89.9",
+  "version": "1.87",
   "description": "Bloat-free Immediate Mode Graphical User interface for C++ with minimal dependencies.",
   "homepage": "https://github.com/ocornut/imgui",
   "license": "MIT",
@@ -25,20 +25,16 @@
       "description": "Build with docking support"
     },
     "dx10-binding": {
-      "description": "Make available DirectX10 binding",
-      "supports": "windows & !uwp"
+      "description": "Make available DirectX10 binding"
     },
     "dx11-binding": {
-      "description": "Make available DirectX11 binding",
-      "supports": "windows & !uwp"
+      "description": "Make available DirectX11 binding"
     },
     "dx12-binding": {
-      "description": "Make available DirectX12 binding",
-      "supports": "!x86 & windows & !uwp"
+      "description": "Make available DirectX12 binding"
     },
     "dx9-binding": {
-      "description": "Make available DirectX9 binding",
-      "supports": "windows & !uwp"
+      "description": "Make available DirectX9 binding"
     },
     "freetype": {
       "description": "Build font atlases using FreeType instead of stb_truetype",
@@ -46,25 +42,10 @@
         "freetype"
       ]
     },
-    "freetype-lunasvg": {
-      "description": "Add support to render OpenType SVG fonts using LunaSVG",
-      "dependencies": [
-        {
-          "name": "imgui",
-          "features": [
-            "freetype"
-          ]
-        },
-        "lunasvg"
-      ]
-    },
     "glfw-binding": {
       "description": "Make available GLFW binding",
       "dependencies": [
-        {
-          "name": "glfw3",
-          "platform": "!emscripten"
-        }
+        "glfw3"
       ]
     },
     "glut-binding": {
@@ -77,19 +58,16 @@
       "description": "Install the libigl-imgui headers"
     },
     "metal-binding": {
-      "description": "Make available Metal binding",
-      "supports": "osx"
+      "description": "Make available Metal binding"
     },
     "opengl2-binding": {
-      "description": "Make available OpenGL (legacy) binding",
-      "supports": "!uwp"
+      "description": "Make available OpenGL (legacy) binding"
     },
     "opengl3-binding": {
       "description": "Make available OpenGL3/ES/ES2 (modern) binding"
     },
     "osx-binding": {
-      "description": "Make available OSX binding",
-      "supports": "osx"
+      "description": "Make available OSX binding"
     },
     "sdl2-binding": {
       "description": "Make available SDL2 binding",
@@ -113,8 +91,7 @@
       "description": "Use WCHAR32 instead of WCHAR16"
     },
     "win32-binding": {
-      "description": "Make available Win32 binding",
-      "supports": "windows & !uwp"
+      "description": "Make available Win32 binding"
     }
   }
 }

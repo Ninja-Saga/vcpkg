@@ -114,11 +114,7 @@ install(TARGETS xmlsec1 xmlsec1-openssl
     ARCHIVE DESTINATION lib
 )
 
-install(EXPORT xmlsecExport
-    FILE unofficial-xmlsec-config.cmake
-    NAMESPACE unofficial::xmlsec::
-    DESTINATION share/unofficial-xmlsec
-)
+install(EXPORT xmlsecExport FILE xmlsec-config.cmake DESTINATION share/xmlsec)
 
 if(INSTALL_HEADERS_TOOLS)
 	file(GLOB PUBLIC_HEADERS

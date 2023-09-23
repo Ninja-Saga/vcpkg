@@ -1,16 +1,11 @@
 {
   "name": "mesa",
-  "version": "23.0.1",
+  "version": "21.2.5",
   "port-version": 2,
   "description": "Mesa - The 3D Graphics Library",
   "homepage": "https://www.mesa3d.org/",
-  "license": "MIT AND BSL-1.0 AND SGI-B-2.0",
-  "supports": "!(windows & arm) & !staticcrt & !uwp",
+  "supports": "!(windows & arm)",
   "dependencies": [
-    {
-      "name": "vcpkg-get-python-packages",
-      "host": true
-    },
     {
       "name": "vcpkg-tool-meson",
       "host": true
@@ -29,8 +24,20 @@
           "name": "mesa",
           "default-features": false,
           "features": [
-            "gles1",
-            "gles2",
+            "gles1"
+          ]
+        },
+        {
+          "name": "mesa",
+          "default-features": false,
+          "features": [
+            "gles2"
+          ]
+        },
+        {
+          "name": "mesa",
+          "default-features": false,
+          "features": [
             "opengl"
           ]
         },
@@ -47,7 +54,10 @@
     "egl": {
       "description": "Build support for EGL platform",
       "dependencies": [
-        "egl-registry"
+        {
+          "name": "mesa",
+          "default-features": false
+        }
       ]
     },
     "gles1": {
@@ -55,10 +65,7 @@
       "dependencies": [
         {
           "name": "mesa",
-          "default-features": false,
-          "features": [
-            "opengl"
-          ]
+          "default-features": false
         }
       ]
     },
@@ -67,10 +74,7 @@
       "dependencies": [
         {
           "name": "mesa",
-          "default-features": false,
-          "features": [
-            "opengl"
-          ]
+          "default-features": false
         }
       ]
     },
@@ -81,44 +85,7 @@
           "name": "llvm",
           "default-features": false,
           "features": [
-            "enable-rtti",
             "libclc"
-          ]
-        },
-        {
-          "name": "llvm",
-          "default-features": false,
-          "features": [
-            "target-arm"
-          ],
-          "platform": "arm32"
-        },
-        {
-          "name": "llvm",
-          "default-features": false,
-          "features": [
-            "target-aarch64"
-          ],
-          "platform": "arm64"
-        },
-        {
-          "name": "llvm",
-          "default-features": false,
-          "features": [
-            "target-x86"
-          ],
-          "platform": "x64 | x86"
-        }
-      ]
-    },
-    "offscreen": {
-      "description": "Build with support for offscreen rendering (OSMesa)",
-      "dependencies": [
-        {
-          "name": "mesa",
-          "default-features": false,
-          "features": [
-            "opengl"
           ]
         }
       ]
@@ -126,7 +93,10 @@
     "opengl": {
       "description": "Build support for OpenGL (all versions)",
       "dependencies": [
-        "opengl"
+        {
+          "name": "mesa",
+          "default-features": false
+        }
       ]
     }
   }

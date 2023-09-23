@@ -27,28 +27,23 @@ vcpkg_from_github(
   HEAD_REF master
   PATCHES
     0001-vcpkg.patch
-    0002-remove-WX-Werror.patch
+    0002-disable-waring-4065.patch
 )
 
-vcpkg_cmake_configure(
-  SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+  SOURCE_PATH ${SOURCE_PATH}
+  PREFER_NINJA
   OPTIONS
     ${FEATURE_OPTIONS}
   OPTIONS_DEBUG
     -DINSTALL_HEADERS=OFF
     -DINSTALL_TOOLS=OFF
-    # the FindOpenSSL.cmake script differentiates debug and release binaries using this suffix.
-    -DCMAKE_DEBUG_POSTFIX=d
 )
 
-vcpkg_cmake_install()
-vcpkg_copy_pdbs()
+vcpkg_install_cmake()
 
-include("${CMAKE_CURRENT_LIST_DIR}/install-pc-files.cmake")
-
-if(IS_DIRECTORY "${CURRENT_PACKAGES_DIR}/tools/boringssl")
+if(IS_DIRECTORY ${CURRENT_PACKAGES_DIR}/tools/boringssl)
   vcpkg_copy_tool_dependencies("${CURRENT_PACKAGES_DIR}/tools/boringssl")
 endif()
 
-file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

@@ -12,8 +12,9 @@ vcpkg_from_github(
         0001-fix-visual-studio.patch
 )
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -DBUILD_STATIC_LIBS=ON
         -DBUILD_EXAMPLES=OFF
@@ -33,17 +34,17 @@ vcpkg_cmake_configure(
         -DSTXXL_DEBUG_ASSERTIONS=OFF
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
-if(EXISTS "${CURRENT_PACKAGES_DIR}/cmake")
-    vcpkg_cmake_config_fixup(CONFIG_PATH cmake)
+if(EXISTS ${CURRENT_PACKAGES_DIR}/cmake)
+    vcpkg_fixup_cmake_targets(CONFIG_PATH cmake)
 endif()
-if(EXISTS "${CURRENT_PACKAGES_DIR}/lib/cmake/${PORT}")
-    vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/${PORT})
+if(EXISTS ${CURRENT_PACKAGES_DIR}/lib/cmake/${PORT})
+    vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/${PORT})
 endif()
 
 vcpkg_replace_string(
-    "${CURRENT_PACKAGES_DIR}/share/${PORT}/stxxl-config.cmake"
+    ${CURRENT_PACKAGES_DIR}/share/${PORT}/stxxl-config.cmake
     "\${STXXL_CMAKE_DIR}/../include"
     "\${STXXL_CMAKE_DIR}/../../include"
 )
@@ -54,19 +55,19 @@ else()
     set(EXECUTABLE_SUFFIX "")
 endif()
 
-file(INSTALL "${CURRENT_PACKAGES_DIR}/bin/stxxl_tool${EXECUTABLE_SUFFIX}"
-    DESTINATION "${CURRENT_PACKAGES_DIR}/tools/${PORT}")
-vcpkg_copy_tool_dependencies("${CURRENT_PACKAGES_DIR}/tools/${PORT}")
+file(INSTALL ${CURRENT_PACKAGES_DIR}/bin/stxxl_tool${EXECUTABLE_SUFFIX}
+    DESTINATION ${CURRENT_PACKAGES_DIR}/tools/${PORT})
+vcpkg_copy_tool_dependencies(${CURRENT_PACKAGES_DIR}/tools/${PORT})
 
 file(REMOVE_RECURSE
-    "${CURRENT_PACKAGES_DIR}/debug/include"
-    "${CURRENT_PACKAGES_DIR}/debug/bin"
-    "${CURRENT_PACKAGES_DIR}/debug/share"
-    "${CURRENT_PACKAGES_DIR}/bin"
+    ${CURRENT_PACKAGES_DIR}/debug/include
+    ${CURRENT_PACKAGES_DIR}/debug/bin
+    ${CURRENT_PACKAGES_DIR}/debug/share
+    ${CURRENT_PACKAGES_DIR}/bin
 )
 
 # Handle copyright
-configure_file("${SOURCE_PATH}/LICENSE_1_0.txt" "${CURRENT_PACKAGES_DIR}/share/${PORT}/copyright" COPYONLY)
+configure_file(${SOURCE_PATH}/LICENSE_1_0.txt ${CURRENT_PACKAGES_DIR}/share/${PORT}/copyright COPYONLY)
 
 vcpkg_copy_pdbs()
 

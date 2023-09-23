@@ -1,13 +1,11 @@
 {
   "name": "libcanberra",
   "version": "0.30",
-  "port-version": 4,
+  "port-version": 2,
   "description": "An implementation of the XDG Sound Theme and Name Specifications, for generating event sounds on free desktops",
   "homepage": "http://0pointer.de/lennart/projects/libcanberra/",
-  "license": "LGPL-2.1-or-later",
-  "supports": "!windows | mingw",
+  "supports": "!(windows | uwp)",
   "dependencies": [
-    "gettext",
     "libvorbis"
   ],
   "default-features": [
@@ -15,10 +13,7 @@
   ],
   "features": {
     "alsa": {
-      "description": "Enable optional ALSA support",
-      "dependencies": [
-        "alsa"
-      ]
+      "description": "Enable optional ALSA support"
     },
     "defaults": {
       "description": "Default features",
@@ -26,35 +21,23 @@
         {
           "name": "libcanberra",
           "features": [
-            "alsa"
+            "null"
           ],
-          "platform": "linux"
+          "platform": "osx"
         },
         {
           "name": "libcanberra",
           "features": [
-            "null"
+            "alsa"
           ],
-          "platform": "!linux"
+          "platform": "linux"
         }
       ]
     },
     "gstreamer": {
       "description": "Enable optional GStreamer support",
       "dependencies": [
-        {
-          "name": "gstreamer",
-          "default-features": false
-        }
-      ]
-    },
-    "gtk3": {
-      "description": "Enable optional GTK3 support",
-      "dependencies": [
-        {
-          "name": "gtk3",
-          "default-features": false
-        }
+        "gstreamer"
       ]
     },
     "null": {

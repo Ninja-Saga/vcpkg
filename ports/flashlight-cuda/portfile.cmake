@@ -34,19 +34,20 @@ vcpkg_check_features(
 )
 
 # Build and install
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS 
         ${FL_DEFAULT_VCPKG_CMAKE_FLAGS} 
         ${FEATURE_OPTIONS}
     OPTIONS_DEBUG
-        "-DFL_INSTALL_CMAKE_DIR=${CURRENT_PACKAGES_DIR}/debug/share/flashlight"
+        -DFL_INSTALL_CMAKE_DIR=${CURRENT_PACKAGES_DIR}/debug/share/flashlight    
     OPTIONS_RELEASE        
-        "-DFL_INSTALL_CMAKE_DIR=${CURRENT_PACKAGES_DIR}/share/flashlight"
+        -DFL_INSTALL_CMAKE_DIR=${CURRENT_PACKAGES_DIR}/share/flashlight
 )
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
-vcpkg_cmake_config_fixup(PACKAGE_NAME flashlight)
+vcpkg_fixup_cmake_targets(CONFIG_PATH share/flashlight TARGET_PATH share/flashlight)
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
@@ -83,4 +84,4 @@ if (NUM_TOOLS GREATER 0)
 endif()
 
 # Copyright
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

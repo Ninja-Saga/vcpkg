@@ -8,7 +8,7 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-file(COPY "${SOURCE_PATH}/csv.h" DESTINATION "${CURRENT_PACKAGES_DIR}/include/${PORT}")
+file(COPY ${SOURCE_PATH}/csv.h DESTINATION ${CURRENT_PACKAGES_DIR}/include)
 
 # Handle copyright
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
+configure_file(${SOURCE_PATH}/LICENSE ${CURRENT_PACKAGES_DIR}/share/${PORT}/copyright COPYONLY)

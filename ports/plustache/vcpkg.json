@@ -1,14 +1,10 @@
 {
   "name": "plustache",
-  "version": "0.4.0",
-  "port-version": 4,
+  "version-string": "0.4.0",
+  "port-version": 2,
   "description": "{{mustaches}} for C++",
   "dependencies": [
     "boost-algorithm",
-    "boost-regex",
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    }
+    "boost-regex"
   ]
 }

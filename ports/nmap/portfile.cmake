@@ -8,8 +8,8 @@ vcpkg_download_distfile(ARCHIVE
 )
 
 if(VCPKG_TARGET_IS_WINDOWS)
-    vcpkg_extract_source_archive(
-        SOURCE_PATH
+    vcpkg_extract_source_archive_ex(
+        OUT_SOURCE_PATH SOURCE_PATH
         ARCHIVE ${ARCHIVE}
         PATCHES
             fix-snprintf.patch
@@ -38,40 +38,55 @@ if(VCPKG_TARGET_IS_WINDOWS)
         WORKING_DIRECTORY ${SOURCE_PATH}/mswin32
         LOGNAME upgrade-Packet-${TARGET_TRIPLET}
     )
-    vcpkg_msbuild_install(
-        SOURCE_PATH "${SOURCE_PATH}"
-        PROJECT_SUBPATH mswin32/nmap.vcxproj
-        PLATFORM ${MSBUILD_PLATFORM}
+    # Build
+    vcpkg_build_msbuild(
+    PROJECT_PATH ${SOURCE_PATH}/mswin32/nmap.vcxproj
+    PLATFORM ${MSBUILD_PLATFORM}
+    USE_VCPKG_INTEGRATION
     )
+    
+    # Install
+    if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL Release)
+        file(INSTALL ${SOURCE_PATH}/mswin32/Release/nmap.exe
+                     ${SOURCE_PATH}/mswin32/Release/nmap.pdb
+                     DESTINATION ${CURRENT_PACKAGES_DIR}/tools)
+    endif()
+    if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL Debug)
+        file(INSTALL ${SOURCE_PATH}/mswin32/Debug/nmap.exe
+                     ${SOURCE_PATH}/mswin32/Debug/nmap.pdb
+                     DESTINATION ${CURRENT_PACKAGES_DIR}/tools)
+    endif()
 else()
     set(ENV{LDFLAGS} "$ENV{LDFLAGS} -pthread")
     set(OPTIONS --without-nmap-update --with-openssl=${CURRENT_INSTALLED_DIR} --with-libssh2=${CURRENT_INSTALLED_DIR} --with-libz=${CURRENT_INSTALLED_DIR} --with-libpcre=${CURRENT_INSTALLED_DIR})
     message(STATUS "Building Options: ${OPTIONS}")
     
-    # Since nmap makefile has strong relationshop with codes, copy codes to obj path
-    message(STATUS "Configuring ${TARGET_TRIPLET}-rel")
-    vcpkg_extract_source_archive(source_path_release
-        ARCHIVE "${ARCHIVE}"
-        WORKING_DIRECTORY "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel"
-    )
+    if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL Release)
+        # Since nmap makefile has strong relationshop with codes, copy codes to obj path
+        message(STATUS "Configuring ${TARGET_TRIPLET}-rel")
+	    vcpkg_extract_source_archive(source_path_release
+            ARCHIVE "${ARCHIVE}"
+            WORKING_DIRECTORY "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel"
+        )
 
-    vcpkg_execute_required_process(
-        COMMAND "./configure" ${OPTIONS}
-    WORKING_DIRECTORY "${source_path_release}"
-        LOGNAME config-${TARGET_TRIPLET}-rel
-    )
+        vcpkg_execute_required_process(
+            COMMAND "./configure" ${OPTIONS}
+	    WORKING_DIRECTORY "${source_path_release}"
+            LOGNAME config-${TARGET_TRIPLET}-rel
+        )
+        
+        message(STATUS "Building ${TARGET_TRIPLET}-rel")
+        vcpkg_execute_required_process(
+            COMMAND make
+            WORKING_DIRECTORY "${source_path_release}"
+            LOGNAME build-${TARGET_TRIPLET}-rel
+        )
+        
+        message(STATUS "Installing ${TARGET_TRIPLET}-rel")
+        file(INSTALL ${source_path_release}/nmap DESTINATION ${CURRENT_PACKAGES_DIR}/tools)
+    endif()
     
-    message(STATUS "Building ${TARGET_TRIPLET}-rel")
-    vcpkg_execute_required_process(
-        COMMAND make
-        WORKING_DIRECTORY "${source_path_release}"
-        LOGNAME build-${TARGET_TRIPLET}-rel
-    )
-    
-    message(STATUS "Installing ${TARGET_TRIPLET}-rel")
-    file(INSTALL "${source_path_release}/nmap" DESTINATION "${CURRENT_PACKAGES_DIR}/tools")
-    
-    if (NOT VCPKG_BUILD_TYPE)
+    if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL Debug)
         # Since nmap makefile has strong relationshop with codes, copy codes to obj path
         message(STATUS "Configuring ${TARGET_TRIPLET}-dbg")
         vcpkg_extract_source_archive(source_path_debug
@@ -99,7 +114,7 @@ else()
     set(SOURCE_PATH "${source_path_release}")
 endif()
 
-# Handle copyright
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING")
+vcpkg_copy_pdbs()
 
-file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
+# Handle copyright
+file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

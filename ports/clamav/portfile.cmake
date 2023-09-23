@@ -14,8 +14,9 @@ vcpkg_from_github(
       "mspack.patch"
 )
 
-vcpkg_cmake_configure(
-  SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+  SOURCE_PATH ${SOURCE_PATH}
+  PREFER_NINJA
   OPTIONS
       -DENABLE_LIBCLAMAV_ONLY=ON
       -DENABLE_DOCS=OFF
@@ -24,10 +25,10 @@ vcpkg_cmake_configure(
       -DENABLE_EXTERNAL_MSPACK=ON
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 

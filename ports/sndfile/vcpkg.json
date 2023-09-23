@@ -1,7 +1,7 @@
 {
   "name": "sndfile",
-  "version": "0",
-  "port-version": 2,
+  "version-string": "0",
+  "port-version": 1,
   "description": "x Library to read, write and manipulate many soundfile types.",
   "dependencies": [
     "libsndfile"

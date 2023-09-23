@@ -1,17 +1,13 @@
 {
   "name": "ignition-msgs6",
   "version": "6.0.0",
-  "port-version": 5,
+  "port-version": 3,
   "description": "Middleware protobuf messages for robotics",
-  "license": "Apache-2.0",
   "supports": "!(arm | uwp)",
   "dependencies": [
     "ignition-cmake2",
     "ignition-math6",
-    {
-      "name": "ignition-modularscripts",
-      "host": true
-    },
+    "ignition-modularscripts",
     "protobuf",
     "tinyxml2"
   ]

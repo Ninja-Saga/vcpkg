@@ -1,10 +1,8 @@
 {
   "name": "cppzmq",
-  "version": "4.9.0",
-  "port-version": 1,
-  "description": "Header-only C++ binding for ZeroMQ",
+  "version": "4.8.1",
+  "description": "lightweight messaging kernel, C++ bindings",
   "homepage": "https://github.com/zeromq/cppzmq",
-  "license": "MIT",
   "dependencies": [
     {
       "name": "vcpkg-cmake",
@@ -18,16 +16,7 @@
   ],
   "features": {
     "draft": {
-      "description": "Build and install draft",
-      "dependencies": [
-        {
-          "name": "zeromq",
-          "default-features": false,
-          "features": [
-            "draft"
-          ]
-        }
-      ]
+      "description": "Build and install draft"
     }
   }
 }

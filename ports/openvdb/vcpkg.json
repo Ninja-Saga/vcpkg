@@ -1,11 +1,9 @@
 {
   "name": "openvdb",
-  "version": "10.0.0",
-  "port-version": 4,
+  "version": "9.0.0",
   "description": "Sparse volume data structure and tools",
   "homepage": "https://github.com/dreamworksanimation/openvdb",
   "license": "MPL-2.0",
-  "supports": "!xbox",
   "dependencies": [
     "blosc",
     "boost-any",
@@ -16,7 +14,7 @@
     "boost-system",
     "boost-thread",
     "boost-uuid",
-    "imath",
+    "ilmbase",
     "openexr",
     "tbb",
     {
@@ -30,14 +28,7 @@
   ],
   "features": {
     "ax": {
-      "description": "Provides a powerful and easy way of interacting with OpenVDB volume and point data.",
-      "supports": "!windows",
-      "dependencies": [
-        {
-          "name": "llvm",
-          "default-features": false
-        }
-      ]
+      "description": "Provides a powerful and easy way of interacting with OpenVDB volume and point data."
     },
     "tools": {
       "description": "OpenVDB utilities: view, print and render",

@@ -10,7 +10,8 @@ vcpkg_from_github(
 )
 
 vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     DISABLE_PARALLEL_CONFIGURE
     OPTIONS 
         -DBUILD_EXAMPLES=OFF
@@ -18,7 +19,7 @@ vcpkg_cmake_configure(
 )
 
 vcpkg_cmake_install()
-vcpkg_cmake_config_fixup(CONFIG_PATH "lib/cmake/${PORT}")
+vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/${PORT})
 vcpkg_fixup_pkgconfig()
 vcpkg_copy_pdbs()
 
@@ -26,11 +27,16 @@ file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share"
                     "${CURRENT_PACKAGES_DIR}/debug/include"
  )
 
-file(REMOVE "${CURRENT_PACKAGES_DIR}/bin/freealut-config")
-file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/bin/freealut-config")
-
-if(VCPKG_LIBRARY_LINKAGE STREQUAL "static" OR NOT VCPKG_TARGET_IS_WINDOWS)
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin" "${CURRENT_PACKAGES_DIR}/debug/bin")
 endif()
 
-file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+if(EXISTS "${CURRENT_PACKAGES_DIR}/bin/freealut-config")
+    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin/freealut-config")
+endif()
+
+if(EXISTS "${CURRENT_PACKAGES_DIR}/debug/bin/freealut-config")
+    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/bin/freealut-config")
+endif()
+
+file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

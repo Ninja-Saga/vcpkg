@@ -1,11 +1,9 @@
 {
   "name": "opencv2",
   "version": "2.4.13.7",
-  "port-version": 19,
-  "description": "Open Source Computer Vision Library",
+  "port-version": 9,
+  "description": "computer vision library",
   "homepage": "https://github.com/opencv/opencv",
-  "license": "BSD-3-Clause",
-  "supports": "!uwp & !(arm & windows)",
   "dependencies": [
     {
       "name": "vcpkg-cmake",
@@ -13,10 +11,6 @@
     },
     {
       "name": "vcpkg-cmake-config",
-      "host": true
-    },
-    {
-      "name": "vcpkg-get-python-packages",
       "host": true
     },
     "zlib"
@@ -29,12 +23,6 @@
       "description": "CUDA support for opencv",
       "dependencies": [
         "cuda"
-      ]
-    },
-    "dc1394": {
-      "description": "Dc1394 support for opencv",
-      "dependencies": [
-        "libdc1394"
       ]
     },
     "default-features": {
@@ -82,7 +70,7 @@
       ]
     },
     "gtk": {
-      "description": "GTK support for opencv",
+      "description": "GDCM support for opencv",
       "dependencies": [
         "gtk"
       ]
@@ -102,7 +90,6 @@
     "openexr": {
       "description": "OpenEXR support for opencv",
       "dependencies": [
-        "imath",
         "openexr"
       ]
     },

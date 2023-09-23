@@ -1,8 +1,7 @@
 include(${CURRENT_INSTALLED_DIR}/share/qt5/qt_port_functions.cmake)
 
-qt_submodule_installation(
-    PATCHES
-        "fix-pkgconfig-qt5uiplugin-not-found.patch"
+qt_submodule_installation(PATCHES
+    icudt-debug-suffix.patch # https://bugreports.qt.io/browse/QTBUG-87677
 )
 
 if(EXISTS "${CURRENT_INSTALLED_DIR}/plugins/platforms/qminimal${VCPKG_TARGET_SHARED_LIBRARY_SUFFIX}")

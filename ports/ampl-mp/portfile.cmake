@@ -21,8 +21,9 @@ if (NOT TARGET_TRIPLET STREQUAL HOST_TRIPLET)
     endif()
 endif()
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -DBUILD=no
         -DBUILD_TESTING=OFF
@@ -30,20 +31,20 @@ vcpkg_cmake_configure(
         -DARITHCHK_EXEC=${ARITHCHK_EXEC}
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
 vcpkg_copy_pdbs()
 
 vcpkg_copy_tools(TOOL_NAMES gen-expr-info AUTO_CLEAN)
 
-vcpkg_cmake_config_fixup(PACKAGE_NAME unofficial-mp)
+vcpkg_fixup_cmake_targets(CONFIG_PATH share/unofficial-mp TARGET_PATH share/unofficial-mp)
 
 file(REMOVE_RECURSE
-    "${CURRENT_PACKAGES_DIR}/debug/include"
-    "${CURRENT_PACKAGES_DIR}/debug/share"
+    ${CURRENT_PACKAGES_DIR}/debug/include
+    ${CURRENT_PACKAGES_DIR}/debug/share
     # remove amplsig.dll and cp.dll, see https://github.com/ampl/mp/issues/130
-    "${CURRENT_PACKAGES_DIR}/debug/bin"
-    "${CURRENT_PACKAGES_DIR}/bin"
+    ${CURRENT_PACKAGES_DIR}/debug/bin
+    ${CURRENT_PACKAGES_DIR}/bin
 )
 
-configure_file("${SOURCE_PATH}/LICENSE.rst" "${CURRENT_PACKAGES_DIR}/share/${PORT}/copyright" COPYONLY)
+configure_file(${SOURCE_PATH}/LICENSE.rst ${CURRENT_PACKAGES_DIR}/share/${PORT}/copyright COPYONLY)

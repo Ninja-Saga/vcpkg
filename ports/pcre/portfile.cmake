@@ -7,8 +7,7 @@ set(PATCHES
         pcre-8.45_suppress_cmake_and_compiler_warnings-errors.patch
         # Modified for 8.45 from https://bugs.exim.org/show_bug.cgi?id=2600
         pcre-8.45_fix_postfix_for_debug_Windows_builds.patch
-        export-cmake-targets.patch
-        pcre-8.4.5_fix_check_function_exists_for_arm-androi_builds.patch)
+        export-cmake-targets.patch)
 
 vcpkg_from_sourceforge(
     OUT_SOURCE_PATH SOURCE_PATH
@@ -19,11 +18,6 @@ vcpkg_from_sourceforge(
     PATCHES ${PATCHES}
 )
 
-set(IS_PCRE_SUPPORT_JIT YES)
-if(VCPKG_TARGET_ARCHITECTURE MATCHES "loongarch")
-    set(IS_PCRE_SUPPORT_JIT NO)
-endif()
-
 vcpkg_cmake_configure(
     SOURCE_PATH ${SOURCE_PATH}
     OPTIONS
@@ -32,7 +26,7 @@ vcpkg_cmake_configure(
         -DPCRE_BUILD_PCRE32=YES
         -DPCRE_BUILD_PCRE16=YES
         -DPCRE_BUILD_PCRE8=YES
-        -DPCRE_SUPPORT_JIT=${IS_PCRE_SUPPORT_JIT}
+        -DPCRE_SUPPORT_JIT=YES
         -DPCRE_SUPPORT_UTF=YES
         -DPCRE_SUPPORT_UNICODE_PROPERTIES=YES
         # optional dependencies for PCREGREP
@@ -67,10 +61,10 @@ file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/man")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/man")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/share/doc")
-
-file(REMOVE "${CURRENT_PACKAGES_DIR}/bin/pcre-config" "${CURRENT_PACKAGES_DIR}/debug/bin/pcre-config")
-if(VCPKG_LIBRARY_LINKAGE STREQUAL "static" OR NOT VCPKG_TARGET_IS_WINDOWS)
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin" "${CURRENT_PACKAGES_DIR}/debug/bin")
+else()
+    file(REMOVE "${CURRENT_PACKAGES_DIR}/bin/pcre-config" "${CURRENT_PACKAGES_DIR}/debug/bin/pcre-config")
 endif()
 
 vcpkg_copy_pdbs()

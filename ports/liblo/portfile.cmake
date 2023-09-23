@@ -6,26 +6,27 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}/cmake"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}/cmake
+    PREFER_NINJA # Disable this option if project cannot be built with Ninja
     OPTIONS -DTHREADING=1
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
 # Install needed files into package directory
-vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/liblo)
+vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/liblo)
 
 vcpkg_copy_tools(TOOL_NAMES oscsend oscdump AUTO_CLEAN)
 
 # Remove unnecessary files
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL static)
-    file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin" "${CURRENT_PACKAGES_DIR}/debug/bin")
+    file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/bin ${CURRENT_PACKAGES_DIR}/debug/bin)
 endif()
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/liblo RENAME copyright)
 
 vcpkg_fixup_pkgconfig()

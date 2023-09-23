@@ -1,16 +1,15 @@
 {
   "name": "nss",
-  "version": "3.87",
-  "port-version": 2,
+  "version": "3.76",
   "description": "Network Security Services from Mozilla",
   "homepage": "https://ftp.mozilla.org/pub/security/nss/releases/",
   "license": "MPL-2.0",
-  "supports": "windows & !arm & !xbox",
+  "supports": "windows & !arm",
   "dependencies": [
     "nspr",
     "sqlite3",
     {
-      "name": "vcpkg-tool-gyp-next",
+      "name": "vcpkg-tool-gyp-nss",
       "host": true
     },
     {

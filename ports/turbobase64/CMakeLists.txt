@@ -34,33 +34,37 @@ else ()
 endif ()
 
 if (ARCH_AMD64)
-    add_library(tb64
+    add_library(base64
                 $<TARGET_OBJECTS:base64_scalar>
                 $<TARGET_OBJECTS:base64_ssse3>
                 $<TARGET_OBJECTS:base64_avx>
                 $<TARGET_OBJECTS:base64_avx2>)
 else ()
-    add_library(tb64
+    add_library(base64
                 $<TARGET_OBJECTS:base64_scalar>
                 $<TARGET_OBJECTS:base64_ssse3>)
 endif ()
 
 # End of Yandex code
 
-include(CMakePackageConfigHelpers)
-include(GNUInstallDirs)
+target_include_directories(base64 SYSTEM PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+set_target_properties(base64 PROPERTIES PUBLIC_HEADER "${CMAKE_SOURCE_DIR}/turbob64.h")
 
-target_include_directories(tb64 PUBLIC 
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+install(TARGETS base64
+        EXPORT base64Config
+        RUNTIME DESTINATION "bin"
+        LIBRARY DESTINATION "lib"
+        ARCHIVE DESTINATION "lib"
+        PUBLIC_HEADER DESTINATION "include"
+        COMPONENT dev
         )
 
-install(TARGETS tb64
-        EXPORT unofficial-turbobase64-config
-        )
-install(FILES "${CMAKE_SOURCE_DIR}/turbob64.h" TYPE INCLUDE)
+export(TARGETS base64
+       NAMESPACE TURBO::
+       FILE "share/base64/base64Config.cmake"
+       )
 
-install(EXPORT unofficial-turbobase64-config
-        DESTINATION "${CMAKE_INSTALL_DATADIR}/unofficial-turbobase64"
-        NAMESPACE unofficial::turbobase64::
+install(EXPORT base64Config
+        DESTINATION "share/base64"
+        NAMESPACE TURBO::
         )

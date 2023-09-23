@@ -1,81 +1,95 @@
 diff --git a/Accelerators/Vtkm/Core/CMakeLists.txt b/Accelerators/Vtkm/Core/CMakeLists.txt
-index 397dca9f6..bc9c62ac5 100644
+index b889a771f..317d83f75 100644
 --- a/Accelerators/Vtkm/Core/CMakeLists.txt
 +++ b/Accelerators/Vtkm/Core/CMakeLists.txt
-@@ -16,8 +16,7 @@
+@@ -14,8 +14,9 @@
+ ##
+ ##=============================================================================
  
- set(VTKm_NO_DEPRECATED_VIRTUAL ON)
- 
--list(INSERT CMAKE_MODULE_PATH 0
+-list(INSERT 0 CMAKE_MODULE_PATH
 -  "${VTK_SOURCE_DIR}/ThirdParty/vtkm/vtkvtkm/vtk-m/CMake")
 +find_package(VTKm CONFIG REQUIRED)
++#list(INSERT 0 CMAKE_MODULE_PATH
++#  "${VTK_SOURCE_DIR}/ThirdParty/vtkm/vtkvtkm/vtk-m/CMake")
  
  set(private_headers
-   vtkmFilterPolicy.h
-@@ -65,9 +64,6 @@ vtkm_add_target_information(${vtkm_accel_target}
-                             EXTENDS_VTKM
+   vtkmlib/DataArrayConverters.hxx
+@@ -77,9 +78,9 @@ vtkm_add_target_information(${vtkm_accel_target}
                              MODIFY_CUDA_FLAGS
                              DEVICE_SOURCES ${sources})
+ 
 -vtk_module_set_property(VTK::AcceleratorsVTKmCore
 -  PROPERTY  JOB_POOL_COMPILE
 -  VALUE     vtkm_pool)
++#vtk_module_set_property(VTK::AcceleratorsVTKmCore
++#  PROPERTY  JOB_POOL_COMPILE
++#  VALUE     vtkm_pool)
  
- if (TARGET vtkm::kokkos_hip)
-   list(TRANSFORM nowrap_classes APPEND ".cxx" OUTPUT_VARIABLE hip_impl)
+ if (TARGET vtkm::cuda)
+   vtk_module_set_property(VTK::AcceleratorsVTKmCore
 diff --git a/Accelerators/Vtkm/DataModel/CMakeLists.txt b/Accelerators/Vtkm/DataModel/CMakeLists.txt
-index 9d5dfe100..7fea257b7 100644
+index 56307be8d..30fff98e8 100644
 --- a/Accelerators/Vtkm/DataModel/CMakeLists.txt
 +++ b/Accelerators/Vtkm/DataModel/CMakeLists.txt
-@@ -16,8 +16,7 @@
+@@ -14,8 +14,9 @@
+ ##
+ ##=============================================================================
  
- set(VTKm_NO_DEPRECATED_VIRTUAL ON)
- 
--list(INSERT CMAKE_MODULE_PATH 0
+-list(INSERT 0 CMAKE_MODULE_PATH
 -  "${VTK_SOURCE_DIR}/ThirdParty/vtkm/vtkvtkm/vtk-m/CMake")
 +find_package(VTKm CONFIG REQUIRED)
++#list(INSERT 0 CMAKE_MODULE_PATH
++#  "${VTK_SOURCE_DIR}/ThirdParty/vtkm/vtkvtkm/vtk-m/CMake")
  
  set(sources
    vtkmlib/ArrayConvertersReal.cxx
-@@ -72,10 +71,6 @@ vtkm_add_target_information(${vtkm_accel_target}
+@@ -85,9 +86,9 @@ vtkm_add_target_information(${vtkm_accel_target}
                              MODIFY_CUDA_FLAGS
                              DEVICE_SOURCES ${sources})
  
 -vtk_module_set_property(VTK::AcceleratorsVTKmDataModel
 -  PROPERTY  JOB_POOL_COMPILE
 -  VALUE     vtkm_pool)
--
++#vtk_module_set_property(VTK::AcceleratorsVTKmDataModel
++#  PROPERTY  JOB_POOL_COMPILE
++#  VALUE     vtkm_pool)
+ 
  if (TARGET vtkm::cuda)
-   set(cuda_impl ${nowrap_classes} vtkmDataSet.cxx)
-   set_source_files_properties(${cuda_impl} PROPERTIES
+   vtk_module_set_property(VTK::AcceleratorsVTKmDataModel
 diff --git a/Accelerators/Vtkm/Filters/CMakeLists.txt b/Accelerators/Vtkm/Filters/CMakeLists.txt
-index 0f51c436d..567b49197 100644
+index 14e84f1dd..0a931285d 100644
 --- a/Accelerators/Vtkm/Filters/CMakeLists.txt
 +++ b/Accelerators/Vtkm/Filters/CMakeLists.txt
-@@ -16,8 +16,7 @@
+@@ -14,8 +14,9 @@
+ ##
+ ##=============================================================================
  
- set(VTKm_NO_DEPRECATED_VIRTUAL ON)
- 
--list(INSERT CMAKE_MODULE_PATH 0
+-list(INSERT 0 CMAKE_MODULE_PATH
 -  "${VTK_SOURCE_DIR}/ThirdParty/vtkm/vtkvtkm/vtk-m/CMake")
 +find_package(VTKm CONFIG REQUIRED)
++#list(INSERT 0 CMAKE_MODULE_PATH
++#  "${VTK_SOURCE_DIR}/ThirdParty/vtkm/vtkvtkm/vtk-m/CMake")
  
- set(classes
+ set(impl_classes
    vtkmAverageToCells
-@@ -118,9 +117,6 @@ vtkm_add_target_information(${vtkm_accel_target}
+@@ -80,9 +81,9 @@ vtkm_add_target_information(${vtkm_accel_target}
                              MODIFY_CUDA_FLAGS
                              DEVICE_SOURCES ${sources})
  
 -vtk_module_set_property(VTK::AcceleratorsVTKmFilters
 -  PROPERTY  JOB_POOL_COMPILE
 -  VALUE     vtkm_pool)
++#vtk_module_set_property(VTK::AcceleratorsVTKmFilters
++#  PROPERTY  JOB_POOL_COMPILE
++#  VALUE     vtkm_pool)
  vtk_module_link(VTK::AcceleratorsVTKmFilters
    PRIVATE
      vtkm_worklet
 diff --git a/CMake/vtk-config.cmake.in b/CMake/vtk-config.cmake.in
-index a8c40085a..764298f0e 100644
+index 5a5e8b8df..96413875f 100644
 --- a/CMake/vtk-config.cmake.in
 +++ b/CMake/vtk-config.cmake.in
-@@ -126,9 +126,7 @@ set("${CMAKE_FIND_PACKAGE_NAME}_AVAILABLE_COMPONENTS" "@vtk_all_components@")
+@@ -121,9 +121,7 @@ set("${CMAKE_FIND_PACKAGE_NAME}_AVAILABLE_COMPONENTS" "@vtk_all_components@")
  unset("${CMAKE_FIND_PACKAGE_NAME}_FOUND")
  set("${CMAKE_FIND_PACKAGE_NAME}_HAS_VTKm" "@vtk_has_vtkm@")
  if (${CMAKE_FIND_PACKAGE_NAME}_HAS_VTKm)
@@ -87,13 +101,13 @@ index a8c40085a..764298f0e 100644
      set("${CMAKE_FIND_PACKAGE_NAME}_FOUND" 0)
    endif ()
 diff --git a/ThirdParty/vtkm/CMakeLists.txt b/ThirdParty/vtkm/CMakeLists.txt
-index 8cfbf92b0..ad78cc8f5 100644
+index 5817d42f8..f21d17da8 100644
 --- a/ThirdParty/vtkm/CMakeLists.txt
 +++ b/ThirdParty/vtkm/CMakeLists.txt
 @@ -1,6 +1,41 @@
 -vtk_module_third_party_internal(
 -  LICENSE_FILES "vtkvtkm/vtk-m/LICENSE.txt"
--  VERSION       "1.7.1"
+-  VERSION       "master"
 -  SUBDIRECTORY  vtkvtkm
 -  STANDARD_INCLUDE_DIRS
 -  INTERFACE)
@@ -138,6 +152,7 @@ index 8cfbf92b0..ad78cc8f5 100644
 +    #LIBRARIES vtkm_cont vtkm_filter vtkm_diy vtkm_optionparser vtkm_taotuple
 +    INCLUDE_DIRS VTKm_INCLUDE_DIRS VTKm_DIY_INCLUDE_DIRS VTKm_OPTION_INCLUDE_DIRS
 +)
+\ No newline at end of file
 diff --git a/ThirdParty/vtkm/vtk.module b/ThirdParty/vtkm/vtk.module
 index a8e4dad0f..c7bbbf0e8 100644
 --- a/ThirdParty/vtkm/vtk.module

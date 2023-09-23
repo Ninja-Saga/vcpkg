@@ -1,7 +1,6 @@
 {
   "name": "treehh",
-  "version": "3.18",
+  "version": "3.16",
   "description": "An STL-like C++ header-only tree library",
-  "homepage": "https://github.com/kpeeters/tree.hh",
-  "license": "GPL-2.0-only OR GPL-3.0-only"
+  "homepage": "https://github.com/kpeeters/tree.hh"
 }

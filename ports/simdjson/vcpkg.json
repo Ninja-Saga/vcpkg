@@ -1,6 +1,6 @@
 {
   "name": "simdjson",
-  "version": "3.2.1",
+  "version-semver": "1.0.2",
   "description": "A extremely fast JSON library that can parse gigabytes of JSON per second",
   "homepage": "https://simdjson.org/",
   "license": "Apache-2.0",
@@ -17,8 +17,7 @@
   "default-features": [
     "deprecated",
     "exceptions",
-    "threads",
-    "utf8-validation"
+    "threads"
   ],
   "features": {
     "deprecated": {
@@ -29,9 +28,6 @@
     },
     "threads": {
       "description": "Link with thread support"
-    },
-    "utf8-validation": {
-      "description": "Enable UTF8 validation"
     }
   }
 }

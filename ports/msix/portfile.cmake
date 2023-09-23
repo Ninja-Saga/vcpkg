@@ -11,9 +11,9 @@ vcpkg_from_github(
         fix-dependency-catch2.patch
 )
 
-file(REMOVE_RECURSE "${SOURCE_PATH}/lib")
-file(MAKE_DIRECTORY "${SOURCE_PATH}/lib")
-configure_file("${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt" "${SOURCE_PATH}/lib/CMakeLists.txt")
+file(REMOVE_RECURSE ${SOURCE_PATH}/lib)
+file(MAKE_DIRECTORY ${SOURCE_PATH}/lib)
+configure_file(${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt ${SOURCE_PATH}/lib/CMakeLists.txt)
 
 if(VCPKG_TARGET_IS_WINDOWS)
     set(PLATFORM WIN32)
@@ -28,8 +28,9 @@ else()
     message(FATAL_ERROR "Unknown system: ${VCPKG_CMAKE_SYSTEM_NAME}")
 endif()
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     NO_CHARSET_FLAG
     DISABLE_PARALLEL_CONFIGURE
     OPTIONS
@@ -41,10 +42,10 @@ vcpkg_cmake_configure(
         -DCRYPTO_LIB=${CRYPTO_LIB}
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
 vcpkg_copy_pdbs()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

@@ -1,24 +1,10 @@
 {
   "name": "qt",
-  "version": "6.5.2",
+  "version": "6.2.4",
   "description": "Qt",
   "homepage": "https://www.qt.io/",
   "license": null,
   "dependencies": [
-    {
-      "name": "qt3d",
-      "default-features": false,
-      "features": [
-        "animation",
-        "assimp",
-        "extras",
-        "input",
-        "logic",
-        "qml",
-        "render",
-        "rhi"
-      ]
-    },
     {
       "name": "qt5compat",
       "default-features": false,
@@ -62,7 +48,6 @@
       ]
     },
     "qtinterfaceframework",
-    "qtlanguageserver",
     {
       "name": "qtlottie",
       "default-features": false,
@@ -85,16 +70,7 @@
       "features": [
         "gstreamer"
       ],
-      "platform": "!windows"
-    },
-    {
-      "name": "qtmultimedia",
-      "default-features": false,
-      "features": [
-        "ffmpeg",
-        "gstreamer"
-      ],
-      "platform": "windows & !static"
+      "platform": "!(static & windows)"
     },
     "qtnetworkauth",
     {
@@ -139,11 +115,6 @@
     "qtserialbus",
     "qtserialport",
     "qtshadertools",
-    {
-      "name": "qtspeech",
-      "default-features": false,
-      "platform": "!(windows & x86)"
-    },
     "qtsvg",
     {
       "name": "qttools",
@@ -171,7 +142,7 @@
         "spellchecker",
         "webchannel"
       ],
-      "platform": "!static & !(windows & arm)"
+      "platform": "!static"
     },
     {
       "name": "qtwebsockets",
@@ -182,7 +153,10 @@
     },
     {
       "name": "qtwebview",
-      "default-features": false
+      "default-features": false,
+      "features": [
+        "qml"
+      ]
     },
     {
       "name": "qtwebview",
@@ -190,7 +164,7 @@
       "features": [
         "webengine"
       ],
-      "platform": "!static & !(windows & arm)"
+      "platform": "!static"
     }
   ],
   "default-features": [

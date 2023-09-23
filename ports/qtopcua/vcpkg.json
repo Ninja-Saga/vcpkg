@@ -1,6 +1,6 @@
 {
   "name": "qtopcua",
-  "version": "6.5.2",
+  "version": "6.2.4",
   "description": "Qt wrapper for existing OPC UA stacks",
   "homepage": "https://www.qt.io/",
   "license": null,
@@ -40,7 +40,6 @@
           "default-features": false,
           "features": [
             "amalgamation",
-            "historizing",
             "openssl"
           ]
         }

@@ -1,34 +1,21 @@
 {
   "name": "libgnutls",
-  "version": "3.7.8",
-  "description": "A secure communications library implementing the SSL, TLS and DTLS protocols.",
+  "version": "3.6.15",
+  "port-version": 3,
+  "description": "A secure communications library implementing the SSL, TLS and DTLS protocols",
   "homepage": "https://www.gnutls.org/",
-  "license": null,
-  "supports": "!windows | mingw",
+  "license": "LGPL-2.1-or-later",
+  "supports": "!windows",
   "dependencies": [
+    "gettext",
     "gmp",
     "libidn2",
     "libtasn1",
-    "libunistring",
-    "nettle",
-    "zlib"
+    "nettle"
   ],
   "features": {
-    "nls": {
-      "description": "Enable native language support.",
-      "dependencies": [
-        "gettext",
-        {
-          "name": "gettext",
-          "host": true,
-          "features": [
-            "tools"
-          ]
-        }
-      ]
-    },
     "openssl": {
-      "description": "Enable the OpenSSL compatibility library."
+      "description": "enables the OpenSSL compatibility library"
     }
   }
 }

@@ -1,34 +1,35 @@
+set(NCURSES_VERSION_STR 6.3)
 vcpkg_download_distfile(
     ARCHIVE_PATH
     URLS
-        "https://invisible-mirror.net/archives/ncurses/ncurses-${VERSION}.tar.gz"
-        "ftp://ftp.invisible-island.net/ncurses/ncurses-${VERSION}.tar.gz"
-        "https://ftp.gnu.org/gnu/ncurses/ncurses-${VERSION}.tar.gz"
-    FILENAME "ncurses-${VERSION}.tgz"
-    SHA512 1c2efff87a82a57e57b0c60023c87bae93f6718114c8f9dc010d4c21119a2f7576d0225dab5f0a227c2cfc6fb6bdbd62728e407f35fce5bf351bb50cf9e0fd34
+        "https://invisible-mirror.net/archives/ncurses/ncurses-${NCURSES_VERSION_STR}.tar.gz"
+        "ftp://ftp.invisible-island.net/ncurses/ncurses-${NCURSES_VERSION_STR}.tar.gz"
+        "https://ftp.gnu.org/gnu/ncurses/ncurses-${NCURSES_VERSION_STR}.tar.gz"
+    FILENAME "ncurses-${NCURSES_VERSION_STR}.tgz"
+    SHA512 5373f228cba6b7869210384a607a2d7faecfcbfef6dbfcd7c513f4e84fbd8bcad53ac7db2e7e84b95582248c1039dcfc7c4db205a618f7da22a166db482f0105
 )
 
-vcpkg_extract_source_archive(
-    SOURCE_PATH
+vcpkg_extract_source_archive_ex(
+    OUT_SOURCE_PATH SOURCE_PATH
     ARCHIVE "${ARCHIVE_PATH}"
 )
 
-vcpkg_list(SET OPTIONS)
-
+set(OPTIONS
+    --disable-db-install
+    --enable-pc-files
+    --without-ada
+    --without-manpages
+    --without-progs
+    --without-tack
+    --without-tests
+)
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
     list(APPEND OPTIONS
+        --with-shared
         --with-cxx-shared
-        --with-shared    # "lib model"
-        --without-normal # "lib model"
+        --without-normal
     )
 endif()
-
-if(NOT VCPKG_TARGET_IS_MINGW)
-    list(APPEND OPTIONS
-        --enable-mixed-case
-    )
-endif()
-
 if(VCPKG_TARGET_IS_MINGW)
     list(APPEND OPTIONS
         --disable-home-terminfo
@@ -37,21 +38,23 @@ if(VCPKG_TARGET_IS_MINGW)
     )
 endif()
 
+set(OPTIONS_DEBUG
+    "--with-pkg-config-libdir=${CURRENT_INSTALLED_DIR}/debug/lib/pkgconfig"
+    --with-debug
+    --without-normal
+)
+set(OPTIONS_RELEASE
+    "--with-pkg-config-libdir=${CURRENT_INSTALLED_DIR}/lib/pkgconfig"
+    --without-debug
+    --with-normal
+)
+
 vcpkg_configure_make(
-    SOURCE_PATH "${SOURCE_PATH}"
-    DETERMINE_BUILD_TRIPLET
+    SOURCE_PATH ${SOURCE_PATH}
+    OPTIONS ${OPTIONS}
+    OPTIONS_DEBUG ${OPTIONS_DEBUG}
+    OPTIONS_RELEASE ${OPTIONS_RELEASE}
     NO_ADDITIONAL_PATHS
-    OPTIONS
-        ${OPTIONS}
-        --disable-db-install
-        --enable-pc-files
-        --without-ada
-        --without-debug # "lib model"
-        --without-manpages
-        --without-progs
-        --without-tack
-        --without-tests
-        --with-pkg-config-libdir=libdir
 )
 vcpkg_install_make()
 

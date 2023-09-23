@@ -7,21 +7,14 @@ vcpkg_from_github(
     PATCHES 
         include-qhullcpp-shared.patch
         fix-missing-symbols.patch # upstream https://github.com/qhull/qhull/pull/93
-        noapp.patch # upstream https://github.com/qhull/qhull/pull/124
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" BUILD_STATIC_LIBS)
 
-if("tools" IN_LIST FEATURES)
-    list(APPEND QHULL_OPTIONS -DBUILD_APPLICATIONS:BOOL=ON)
-else()
-    list(APPEND QHULL_OPTIONS -DBUILD_APPLICATIONS:BOOL=OFF)
-endif()
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
         -DBUILD_STATIC_LIBS=${BUILD_STATIC_LIBS}
-        ${QHULL_OPTIONS}
 )
 
 vcpkg_cmake_install()
@@ -60,17 +53,15 @@ if(NOT DEFINED VCPKG_BUILD_TYPE)
 endif()
 vcpkg_fixup_pkgconfig()
 
-if("tools" IN_LIST FEATURES)
-    vcpkg_copy_tools(TOOL_NAMES
-        qconvex
-        qdelaunay
-        qhalf
-        qhull
-        qvoronoi
-        rbox
-        AUTO_CLEAN
-    )
-endif()
+vcpkg_copy_tools(TOOL_NAMES
+    qconvex
+    qdelaunay
+    qhalf
+    qhull
+    qvoronoi
+    rbox
+    AUTO_CLEAN
+)
 
 file(INSTALL "${CURRENT_PORT_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME usage)
 file(INSTALL "${SOURCE_PATH}/COPYING.txt" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)

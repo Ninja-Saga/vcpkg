@@ -1,9 +1,13 @@
 {
   "name": "sqlpp11-connector-mysql",
-  "version": "0.61",
-  "description": "A C++ wrapper for MySQL meant to be used in combination with sqlpp11 (obsolete, use sqlpp11 with the mariadb/mysql feature instead)",
+  "version-string": "0.29",
+  "port-version": 2,
+  "description": "A C++ wrapper for MySQL meant to be used in combination with sqlpp11.",
   "homepage": "https://github.com/rbock/sqlpp11-connector-mysql",
-  "license": "BSD-2-Clause",
+  "dependencies": [
+    "date",
+    "sqlpp11"
+  ],
   "default-features": [
     "mariadb"
   ],
@@ -11,27 +15,13 @@
     "mariadb": {
       "description": "Use MariaDB connector",
       "dependencies": [
-        {
-          "name": "sqlpp11",
-          "default-features": false,
-          "features": [
-            "mariadb"
-          ],
-          "version>=": "0.61"
-        }
+        "libmariadb"
       ]
     },
     "mysql": {
       "description": "Use MySQL connector",
       "dependencies": [
-        {
-          "name": "sqlpp11",
-          "default-features": false,
-          "features": [
-            "mysql"
-          ],
-          "version>=": "0.61"
-        }
+        "libmysql"
       ]
     }
   }

@@ -1,13 +1,14 @@
 {
   "name": "ttauri",
   "version": "0.5.0",
-  "port-version": 2,
+  "port-version": 1,
   "maintainers": "@takev",
-  "description": "A portable, low latency, retained-mode GUI framework written in C++. (renamed to hikogui)",
+  "description": "A portable, low latency, retained-mode GUI framework written in C++.",
   "homepage": "https://github.com/ttauri-project/ttauri",
   "license": "BSL-1.0",
   "supports": "windows & x64",
   "dependencies": [
-    "hikogui"
+    "vulkan",
+    "vulkan-memory-allocator"
   ]
 }

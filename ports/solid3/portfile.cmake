@@ -7,7 +7,6 @@ vcpkg_from_github(
     PATCHES
         disable-examples.patch
         potentially-uninitialized-local-pointer-variable.patch
-        no-sse.patch
 )
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL static)
@@ -16,15 +15,16 @@ else()
     set(DYNAMIC_SOLID ON)
 endif()
 
-vcpkg_cmake_configure(
+vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -DDYNAMIC_SOLID=${DYNAMIC_SOLID}
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 vcpkg_copy_pdbs()
-vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/solid3)
+vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/solid3)
 
 file(COPY ${SOURCE_PATH}/README.md DESTINATION ${CURRENT_PACKAGES_DIR}/share/solid3)
 file(RENAME ${CURRENT_PACKAGES_DIR}/share/solid3/README.md ${CURRENT_PACKAGES_DIR}/share/solid3/copyright)

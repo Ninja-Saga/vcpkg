@@ -1,6 +1,6 @@
 {
   "name": "vtk",
-  "version-semver": "9.2.0-pv5.11.0",
+  "version-semver": "9.0.3-pv5.9.1",
   "port-version": 10,
   "description": "Software system for 3D computer graphics, image processing, and visualization",
   "homepage": "https://github.com/Kitware/VTK",
@@ -9,8 +9,6 @@
     "double-conversion",
     "eigen3",
     "expat",
-    "exprtk",
-    "fmt",
     "freetype",
     "glew",
     {
@@ -20,7 +18,9 @@
     "jsoncpp",
     {
       "name": "libharu",
-      "version>=": "2.4.3"
+      "features": [
+        "notiffsymbols"
+      ]
     },
     "libjpeg-turbo",
     "liblzma",
@@ -30,21 +30,10 @@
     "libxml2",
     "lz4",
     "netcdf-c",
-    "pegtl",
-    {
-      "name": "proj",
-      "default-features": false
-    },
+    "pegtl-2",
+    "proj",
     "pugixml",
-    {
-      "name": "seacas",
-      "default-features": false
-    },
     "sqlite3",
-    {
-      "name": "sqlite3",
-      "host": true
-    },
     "tiff",
     "utfcpp",
     {
@@ -55,7 +44,6 @@
       "name": "vcpkg-cmake-config",
       "host": true
     },
-    "verdict",
     "zlib"
   ],
   "features": {
@@ -104,9 +92,13 @@
     "gdal": {
       "description": "Support GDAL compilation",
       "dependencies": [
+        "gdal",
         {
-          "name": "gdal",
-          "default-features": false
+          "name": "vtk",
+          "default-features": false,
+          "features": [
+            "mpi"
+          ]
         }
       ]
     },
@@ -124,20 +116,6 @@
           ]
         },
         "mpi",
-        {
-          "name": "seacas",
-          "default-features": false,
-          "features": [
-            "mpi"
-          ]
-        },
-        {
-          "name": "vtk",
-          "default-features": false,
-          "features": [
-            "vtkm"
-          ]
-        },
         {
           "name": "vtk-m",
           "default-features": false,
@@ -166,7 +144,6 @@
     "paraview": {
       "description": "Build vtk modules required by paraview",
       "dependencies": [
-        "cli11",
         {
           "name": "vtk",
           "default-features": false,
@@ -187,31 +164,19 @@
     "python": {
       "description": "Python functionality for VTK",
       "dependencies": [
-        "python3",
-        {
-          "name": "python3",
-          "host": true
-        }
+        "python3"
       ]
     },
     "qt": {
       "description": "Qt functionality for VTK",
       "dependencies": [
+        "qt5-imageformats",
+        "qt5-tools",
         {
-          "name": "qtbase",
-          "default-features": false,
-          "features": [
-            "gui",
-            "opengl",
-            "widgets"
-          ]
+          "name": "qt5-x11extras",
+          "platform": "linux"
         },
-        "qtdeclarative",
-        "qtimageformats",
-        {
-          "name": "qttools",
-          "default-features": false
-        }
+        "qt5-xmlpatterns"
       ]
     },
     "utf8": {

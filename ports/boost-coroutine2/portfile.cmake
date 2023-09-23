@@ -3,8 +3,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO boostorg/coroutine2
-    REF boost-1.83.0
-    SHA512 e3cbf798364ed5b5aa6e9d811d356d74bae37463c586ac44a39b2e9f19d4aa366d5703e2f28bb2c8af4509a0695b6e8b5d61fcfdef5a6d0d54136a5aed59f4af
+    REF boost-1.78.0
+    SHA512 e25ac3a97fe4ffd12449b324d311c4e8bb1f64db6166b460c087b09bffdcfa0746bf7731e08258b936639d319944b7f6d193ec92231d7f5d8cbee2f64d0f23e7
     HEAD_REF master
 )
 

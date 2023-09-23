@@ -1,18 +1,10 @@
 {
   "name": "magnum",
   "version-string": "2020.06",
-  "port-version": 14,
+  "port-version": 9,
   "description": "C++11/C++14 graphics middleware for games and data visualization",
   "homepage": "https://magnum.graphics/",
-  "license": null,
   "dependencies": [
-    {
-      "name": "corrade",
-      "host": true,
-      "features": [
-        "utility"
-      ]
-    },
     {
       "name": "corrade",
       "features": [
@@ -162,9 +154,14 @@
           "name": "magnum",
           "default-features": false,
           "features": [
-            "gl",
-            "texturetools",
-            "trade"
+            "gl"
+          ]
+        },
+        {
+          "name": "magnum",
+          "default-features": false,
+          "features": [
+            "texturetools"
           ]
         }
       ]
@@ -188,9 +185,14 @@
           "name": "magnum",
           "default-features": false,
           "features": [
-            "gl",
-            "text",
-            "trade"
+            "gl"
+          ]
+        },
+        {
+          "name": "magnum",
+          "default-features": false,
+          "features": [
+            "text"
           ]
         }
       ]

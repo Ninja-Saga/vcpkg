@@ -1,8 +1,9 @@
 {
   "name": "openssl-windows",
-  "version-string": "deprecated",
-  "description": "Deprecated OpenSSL port. Use port openssl instead.",
-  "supports": "windows & !uwp",
+  "version-string": "1.1.1h",
+  "port-version": 2,
+  "description": "Deprecated OpenSSL port",
+  "supports": "windows",
   "dependencies": [
     "openssl"
   ]

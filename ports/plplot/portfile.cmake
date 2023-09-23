@@ -1,15 +1,18 @@
-vcpkg_minimum_required(VERSION 2022-10-12) # for ${VERSION}
+set(PLPLOT_VERSION 5.13.0)
 
 vcpkg_from_sourceforge(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO plplot/plplot
-    REF "${VERSION} Source"
-    FILENAME "plplot-${VERSION}.tar.gz"
-    SHA512 54533245569b724a7ef90392cc6e9ae65873e6cbab923df0f841c8b43def5e4307690894c7681802209bd3c8df97f54285310a706428f79b3340cce3207087c8
+    REF ${PLPLOT_VERSION}%20Source
+    FILENAME "plplot-${PLPLOT_VERSION}.tar.gz"
+    SHA512 1d5cb5da17d4bde6d675585bff1f8dcb581719249a0b2687867e767703f8dab0870e7ea44b9549a497f4ac0141a3cabf6761c49520c0e2b26ffe581468512cbb
     PATCHES
-        subdirs.patch
-        install-interface-include-directories.patch
-        use-math-h-nan.patch
+      0001-findwxwidgets-fixes.patch
+      0002-wxwidgets-dev-fixes.patch
+      install-interface-include-directories.patch
+      use-math-h-nan.patch
+      fix_utils.patch
+      fix-pkg-config.patch
 )
 
 vcpkg_check_features(
@@ -17,52 +20,52 @@ vcpkg_check_features(
     FEATURES
         wxwidgets PLD_wxwidgets
         wxwidgets ENABLE_wxwidgets
-        x11       PLD_xwin
-        x11       CMAKE_REQUIRE_FIND_PACKAGE_X11
-    INVERTED_FEATURES
-        x11       CMAKE_DISABLE_FIND_PACKAGE_X11
 )
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
         -DDEFAULT_NO_BINDINGS=ON
-        -DDEFAULT_NO_QT_DEVICES=ON
         -DENABLE_cxx=ON
-        -DENABLE_DYNDRIVERS=OFF
-        -DENABLE_qt=OFF
-        -DENABLE_tk=OFF
-        -DHAVE_SHAPELIB=OFF
-        -DPL_DOUBLE=ON
         -DPL_HAVE_QHULL=OFF
-        -DPLD_aqt=OFF   # needs aquaterm framework
-        -DPLD_pdf=OFF   # needs haru
-        -DPLD_psttf=OFF # needs lasi (in addition to pango)
+        -DPLPLOT_USE_QT5=OFF
+        -DPL_DOUBLE=ON
+        -DENABLE_DYNDRIVERS=OFF
+        -DDATA_DIR=${CURRENT_PACKAGES_DIR}/share/plplot
         ${FEATURE_OPTIONS}
-        -DCMAKE_DISABLE_FIND_PACKAGE_Perl=ON
-        -DCMAKE_DISABLE_FIND_PACKAGE_SWIG=ON
-        -DCMAKE_REQUIRE_FIND_PACKAGE_Freetype=ON
     OPTIONS_DEBUG
-        "-DDATA_DIR=${CURRENT_PACKAGES_DIR}/debug/share/${PORT}/data"
-        "-DDOC_DIR=${CURRENT_PACKAGES_DIR}/debug/share/${PORT}/doc"
+        -DDRV_DIR=${CURRENT_PACKAGES_DIR}/debug/bin
     OPTIONS_RELEASE
-        "-DDATA_DIR=${CURRENT_PACKAGES_DIR}/share/${PORT}/data"
-        "-DDOC_DIR=${CURRENT_PACKAGES_DIR}/share/${PORT}/doc"
+        -DDRV_DIR=${CURRENT_PACKAGES_DIR}/bin
 )
 
 vcpkg_cmake_install()
+
 vcpkg_copy_pdbs()
+
 vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/plplot)
+
+# Remove unnecessary tool
+file(REMOVE
+    "${CURRENT_PACKAGES_DIR}/debug/bin/pltek.exe"
+    "${CURRENT_PACKAGES_DIR}/bin/pltek.exe"
+    "${CURRENT_PACKAGES_DIR}/debug/bin/wxPLViewer.exe"
+    "${CURRENT_PACKAGES_DIR}/bin/wxPLViewer.exe"
+)
+
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+    message(STATUS "Static build: Removing the full bin directory.")
+    file(REMOVE_RECURSE
+        "${CURRENT_PACKAGES_DIR}/debug/bin"
+        "${CURRENT_PACKAGES_DIR}/bin"
+    )
+endif()
+
+# Remove unwanted and duplicate directories
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/share/plplot/examples")
+
+file(INSTALL "${SOURCE_PATH}/Copyright" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+
 vcpkg_fixup_pkgconfig()
-
-file(REMOVE_RECURSE
-    "${CURRENT_PACKAGES_DIR}/debug/include"
-    "${CURRENT_PACKAGES_DIR}/debug/share"
-)
-
-file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
-vcpkg_install_copyright(
-    FILE_LIST
-        "${SOURCE_PATH}/Copyright"
-        "${SOURCE_PATH}/COPYING.LIB"
-)

@@ -8,20 +8,21 @@ vcpkg_from_github(
 		0001-fix-_POSIX_C_SOURCE.patch
 )
 
-vcpkg_cmake_configure(
-	SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+	SOURCE_PATH ${SOURCE_PATH}
+	PREFER_NINJA
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
 file(
 	INSTALL 
-		"${SOURCE_PATH}/mcpp_lib.h"
-		"${SOURCE_PATH}/mcpp_out.h"
+		${SOURCE_PATH}/mcpp_lib.h
+		${SOURCE_PATH}/mcpp_out.h
 	DESTINATION 
-		"${CURRENT_PACKAGES_DIR}/include"
+		${CURRENT_PACKAGES_DIR}/include
 )
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

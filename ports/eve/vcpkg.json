@@ -1,11 +1,10 @@
 {
   "name": "eve",
-  "version": "2023.2.15",
-  "description": "EVE - the Expressive Vector Engine : C++20 SIMD Programming Library",
+  "version-date": "2021-10-16",
+  "description": "EVE - the Expressive Vector Engine",
   "homepage": "https://github.com/jfalcou/eve",
-  "documentation": "https://jfalcou.github.io/eve/",
-  "license": "BSL-1.0",
-  "supports": "!windows, mingw",
+  "documentation": "https://jfalcou.github.io/eve/html/pages.html",
+  "supports": "!windows",
   "dependencies": [
     {
       "name": "vcpkg-cmake",

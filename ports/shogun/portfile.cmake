@@ -17,10 +17,11 @@ vcpkg_from_github(
 
 vcpkg_find_acquire_program(PYTHON3)
 get_filename_component(PYTHON3_DIR "${PYTHON3}" DIRECTORY)
-vcpkg_add_to_path("${PYTHON3_DIR}")
+vcpkg_add_to_path(${PYTHON3_DIR})
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -DBUILD_META_EXAMPLES=OFF
         -DBUILD_EXAMPLES=OFF
@@ -46,15 +47,15 @@ vcpkg_cmake_configure(
         -DINSTALL_TARGETS=shogun-static
 )
 
-vcpkg_cmake_install()
-vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/shogun)
+vcpkg_install_cmake()
+vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/shogun)
 
 file(REMOVE_RECURSE
     # This directory is empty given the settings above
-    "${CURRENT_PACKAGES_DIR}/include/shogun/mathematics/linalg/backend"
-    "${CURRENT_PACKAGES_DIR}/debug/include"
-    "${CURRENT_PACKAGES_DIR}/debug/share"
+    ${CURRENT_PACKAGES_DIR}/include/shogun/mathematics/linalg/backend
+    ${CURRENT_PACKAGES_DIR}/debug/include
+    ${CURRENT_PACKAGES_DIR}/debug/share
 )
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

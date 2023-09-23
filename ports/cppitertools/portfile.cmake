@@ -6,19 +6,20 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -Dcppitertools_INSTALL_CMAKE_DIR=share
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
 file(REMOVE_RECURSE
-    "${CURRENT_PACKAGES_DIR}/debug"
-    "${CURRENT_PACKAGES_DIR}/share/cppitertools-config-version.cmake")
+    ${CURRENT_PACKAGES_DIR}/debug
+    ${CURRENT_PACKAGES_DIR}/share/cppitertools-config-version.cmake)
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/LICENSE.md"
-    DESTINATION "${CURRENT_PACKAGES_DIR}/share/cppitertools"
+file(INSTALL ${SOURCE_PATH}/LICENSE.md
+    DESTINATION ${CURRENT_PACKAGES_DIR}/share/cppitertools
     RENAME copyright)

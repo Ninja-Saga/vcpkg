@@ -4,9 +4,7 @@ vcpkg_from_github(
     REF v2020.06
     SHA512 94cc8959b0ee43ecd8d13a25307e7829d53dc6601628d97c32288d1704e2c0835b755bffc06b2105e6aa5a612f119a60e83cb475860b51e6a35999215c100227
     HEAD_REF master
-    PATCHES
-        fix-vs2019.patch
-        build-corrade-rc-always.patch
+	PATCHES fix-vs2019.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" BUILD_STATIC)
@@ -26,37 +24,30 @@ endforeach()
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS FEATURES ${_COMPONENTS})
 
-set(corrade_rc_param "")
-if(VCPKG_CROSSCOMPILING)
-    set(corrade_rc_param
-        "-DCORRADE_RC_EXECUTABLE=${CURRENT_HOST_INSTALLED_DIR}/tools/corrade/corrade-rc${VCPKG_HOST_EXECUTABLE_SUFFIX}"
-    )
-endif()
-
-vcpkg_cmake_configure(
+vcpkg_configure_cmake(
     SOURCE_PATH "${SOURCE_PATH}"
+    PREFER_NINJA # Disable this option if project cannot be built with Ninja
     OPTIONS
         ${FEATURE_OPTIONS}
-        "${corrade_rc_param}"
         -DUTILITY_USE_ANSI_COLORS=ON
         -DBUILD_STATIC=${BUILD_STATIC}
-    MAYBE_UNUSED_VARIABLES
-        CORRADE_RC_EXECUTABLE
-        UTILITY_USE_ANSI_COLORS
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
 # Debug includes and share are the same as release
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 
-# corrade-rc is not built when CMAKE_CROSSCOMPILING
-vcpkg_copy_tools(TOOL_NAMES "corrade-rc" AUTO_CLEAN)
+# Install tools
+if("utility" IN_LIST FEATURES)
+    # Drop a copy of tools
+    vcpkg_copy_tools(TOOL_NAMES "corrade-rc" AUTO_CLEAN)
+endif()
 
 # Ensure no empty folders are left behind
-if(FEATURES STREQUAL "core")
-    # No features, no libs (only Corrade.h).
+if(NOT FEATURES)
+    # No features, no binaries (only Corrade.h).
     file(REMOVE_RECURSE
         "${CURRENT_PACKAGES_DIR}/bin"
         "${CURRENT_PACKAGES_DIR}/lib"

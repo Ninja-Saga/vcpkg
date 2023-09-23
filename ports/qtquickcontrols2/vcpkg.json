@@ -1,9 +1,8 @@
 {
   "name": "qtquickcontrols2",
-  "version-string": "deprecated",
+  "version-semver": "6.2.0",
   "description": "Qt Quick Controls 2 (deprecated). Included in qtdeclarative",
   "homepage": "https://www.qt.io/",
-  "license": null,
   "dependencies": [
     "qtdeclarative"
   ]

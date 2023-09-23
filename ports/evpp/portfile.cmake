@@ -10,25 +10,20 @@ vcpkg_from_github(
         fix-rapidjson-1-1.patch
         fix-linux-build.patch
         fix-osx-build.patch
-        compile-features.patch
-        Add-static-shared-handling.patch
-        Export-unofficial-target.patch
 )
 
-file(REMOVE_RECURSE "${SOURCE_PATH}/3rdparty/rapidjson" "${SOURCE_PATH}/3rdparty/concurrentqueue")
+file(REMOVE_RECURSE ${SOURCE_PATH}/3rdparty/rapidjson ${SOURCE_PATH}/3rdparty/concurrentqueue)
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -DEVPP_VCPKG_BUILD=ON
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
-vcpkg_cmake_config_fixup(PACKAGE_NAME unofficial-evpp)
-
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

@@ -11,7 +11,7 @@ if(VCPKG_TARGET_IS_WINDOWS)
     vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 endif()
 
-vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS FEATURES
+vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     "cifti"         USE_CIFTI_CODE
     "fsl"           USE_FSL_CODE
     "nifti2"        USE_NIFTI2_CODE
@@ -21,27 +21,22 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS FEATURES
 )
 set(TOOL_NAMES)
 if("tools" IN_LIST FEATURES)
-    list(APPEND TOOL_NAMES nifti1_tool) 
-    if("nifti2" IN_LIST FEATURES)
-        list(APPEND TOOL_NAMES nifti_tool) 
-    endif()
-    if("nifticdf" IN_LIST FEATURES)
-        list(APPEND TOOL_NAMES nifti_stats) 
-    endif()
-    if("cifti" IN_LIST FEATURES AND "nifti2" IN_LIST FEATURES)
-        list(APPEND TOOL_NAMES cifti_tool afni_xml_tool) 
-    endif()
+    list(APPEND TOOL_NAMES nifti_stats nifti_tool nifti1_tool)
+endif()
+if("tests" IN_LIST FEATURES)
+    list(APPEND TOOL_NAMES nifit_test) 
 endif()
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         ${FEATURE_OPTIONS}
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 vcpkg_copy_pdbs()
-vcpkg_cmake_config_fixup(CONFIG_PATH share/cmake/NIFTI PACKAGE_NAME nifti)
+vcpkg_fixup_cmake_targets(CONFIG_PATH share/cmake TARGET_PATH share)
 
 if(TOOL_NAMES)
     vcpkg_copy_tools(TOOL_NAMES ${TOOL_NAMES} AUTO_CLEAN)
@@ -50,4 +45,4 @@ endif()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

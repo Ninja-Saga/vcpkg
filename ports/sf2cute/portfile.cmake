@@ -12,24 +12,25 @@ if("example" IN_LIST FEATURES)
     set(BUILD_EXAMPLE ON)
 endif()
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS_DEBUG
         -DSF2CUTE_EXAMPLES_INSTALL_DIR=tools/sf2cute
     OPTIONS_RELEASE
         -DSF2CUTE_INSTALL_EXAMPLES=${BUILD_EXAMPLE}
-        "-DSF2CUTE_EXAMPLES_INSTALL_DIR=${CURRENT_PACKAGES_DIR}/tools/sf2cute"
+        -DSF2CUTE_EXAMPLES_INSTALL_DIR=${CURRENT_PACKAGES_DIR}/tools/sf2cute
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 vcpkg_copy_pdbs()
-vcpkg_cmake_config_fixup()
+vcpkg_fixup_cmake_targets()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/sf2cute" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/sf2cute RENAME copyright)
 
 if(BUILD_EXAMPLE)
-  vcpkg_copy_tool_dependencies("${CURRENT_PACKAGES_DIR}/tools/sf2cute")
+  vcpkg_copy_tool_dependencies(${CURRENT_PACKAGES_DIR}/tools/sf2cute)
 endif()

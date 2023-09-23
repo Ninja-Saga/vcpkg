@@ -12,10 +12,9 @@ vcpkg_from_github(
         0004_compatible-jasper-2-0-20.patch
         0005-fix-pkgconfig.patch
         0006-fix-ilut-header.patch
-        jasper-4.patch
 )
 
-file(REMOVE "${SOURCE_PATH}/DevIL/src-IL/cmake/FindOpenEXR.cmake")
+file(REMOVE ${SOURCE_PATH}/DevIL/src-IL/cmake/FindOpenEXR.cmake)
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
@@ -28,8 +27,9 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     lcms    IL_NO_LCMS
 )
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}/DevIL"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}/DevIL
+    PREFER_NINJA
     DISABLE_PARALLEL_CONFIGURE
     OPTIONS
          ${FEATURE_OPTIONS}
@@ -38,12 +38,12 @@ vcpkg_cmake_configure(
         -DIL_USE_DXTC_SQUISH=OFF
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 vcpkg_copy_pdbs()
 
 vcpkg_fixup_pkgconfig()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

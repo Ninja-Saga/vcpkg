@@ -1,9 +1,11 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO symengine/symengine
-    REF "v${VERSION}"
-    SHA512 e73f62a87d20b676cac66ce82ac93308b688ed2ac18ebdb6884bae1ae66868e1033e33908e797f86a1906f91b975e8607a02e8932db8550a677f6b41373b7934
+    REF v0.7.0
+    SHA512 fd3198bc4a05ca2b9b8a58039cc21af65b44457f295362a1a9b8dbf9c6e3df5186c0c84b289bc9fe85d9efd5ac1a683f6b7ba9a661fb6d913d6ceefb14ee2348
     HEAD_REF master
+    PATCHES
+        fix-build.patch
 )
 
 vcpkg_check_features(
@@ -13,10 +15,15 @@ vcpkg_check_features(
         flint WITH_FLINT 
         mpfr WITH_MPFR
         tcmalloc WITH_TCMALLOC
-        llvm WITH_LLVM
 )
 
-if(integer-class-flint IN_LIST FEATURES)
+if(integer-class-boostmp IN_LIST FEATURES)
+    set(INTEGER_CLASS boostmp)
+
+    if(integer-class-flint IN_LIST FEATURES)
+        message(WARNING "Both boostmp and flint are given for integer class, will use boostmp only.")
+    endif()
+elseif(integer-class-flint IN_LIST FEATURES)
     set(INTEGER_CLASS flint)
 endif()
 
@@ -25,6 +32,8 @@ if(VCPKG_TARGET_IS_UWP)
     set(VCPKG_CXX_FLAGS "${VCPKG_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
 endif()
 
+string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" MSVC_USE_MT)
+
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
@@ -32,10 +41,10 @@ vcpkg_cmake_configure(
         -DBUILD_BENCHMARKS=no
         -DBUILD_TESTS=no
         -DMSVC_WARNING_LEVEL=3
-        -DMSVC_USE_MT=no
+        -DMSVC_USE_MT=${MSVC_USE_MT}
         -DWITH_SYMENGINE_RCP=yes
         -DWITH_SYMENGINE_TEUCHOS=no
-        -DWITH_SYMENGINE_THREAD_SAFE=yes
+        -DINTEGER_CLASS=${INTEGER_CLASS}
         ${FEATURE_OPTIONS}
 )
 

@@ -9,20 +9,22 @@ vcpkg_from_github(
     PATCHES destination.patch
 )
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -DJSON11_BUILD_TESTS:BOOL=OFF
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 vcpkg_copy_pdbs()
 
-file(INSTALL "${CURRENT_PORT_DIR}/json11-config.cmake" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
+file(INSTALL ${CURRENT_PORT_DIR}/json11-config.cmake DESTINATION ${CURRENT_PACKAGES_DIR}/share/json11)
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/LICENSE.txt" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+file(COPY ${SOURCE_PATH}/LICENSE.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/json11)
+file(RENAME ${CURRENT_PACKAGES_DIR}/share/json11/LICENSE.txt ${CURRENT_PACKAGES_DIR}/share/json11/copyright)
 
 vcpkg_fixup_pkgconfig()

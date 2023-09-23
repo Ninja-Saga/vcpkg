@@ -8,17 +8,19 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
     DISABLE_PARALLEL_CONFIGURE
+    PREFER_NINJA
     OPTIONS
         -DENTITYX_BUILD_TESTING=false
         -DENTITYX_BUILD_SHARED=0
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/entityx" RENAME copyright)
+file(COPY ${SOURCE_PATH}/COPYING DESTINATION ${CURRENT_PACKAGES_DIR}/share/entityx)
+file(RENAME ${CURRENT_PACKAGES_DIR}/share/entityx/COPYING ${CURRENT_PACKAGES_DIR}/share/entityx/copyright)

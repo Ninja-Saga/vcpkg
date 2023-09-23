@@ -1,7 +1,7 @@
 {
   "name": "atlmfc",
-  "version": "0",
-  "port-version": 2,
+  "version-string": "0",
+  "port-version": 1,
   "description": "a stub package that ensures VS has ATL/MFC installed.",
   "supports": "windows"
 }

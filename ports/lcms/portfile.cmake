@@ -1,19 +1,16 @@
-vcpkg_minimum_required(VERSION 2022-10-12) # for ${VERSION}
-
 if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
-    set(SHARED_LIBRARY_PATCH "fix-shared-library.patch")
+    set(ADDITIONAL_PATCH "shared.patch")
 endif()
 
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO mm2/Little-CMS
-    REF "lcms${VERSION}"
-    SHA512 fc45f2ce0bf752313369786b65b92443ef6d9ed7e264e22cfe2a4732b370f6bb6e5573b646d0e8edf1b0bf9b9bc5137c98aed5929ba75acdf157d2764bd838fa
+    REF 924a020d09bfe468c665467caf24aadeb41ff77c # 2.12
+    SHA512 0c2dc069878ca38a92af4800aa3fb2660203fbcdf6dccd9db60cfacb6896185e3e9222893f39ec3e132b0f4900a2932d490dd8db5b1b431519966a64d28404d2
     HEAD_REF master
     PATCHES
         remove_library_directive.patch
-        ${SHARED_LIBRARY_PATCH}
-        remove-register.patch
+        ${ADDITIONAL_PATCH}
 )
 
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt" DESTINATION "${SOURCE_PATH}")

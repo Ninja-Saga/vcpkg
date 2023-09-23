@@ -1,8 +1,6 @@
 set(SCRIPT_PATH "${CURRENT_INSTALLED_DIR}/share/qtbase")
 include("${SCRIPT_PATH}/qt_install_submodule.cmake")
 
-vcpkg_buildpath_length_warning(44)
-
  set(TOOL_NAMES 
         qml
         qmlcachegen
@@ -18,8 +16,6 @@ vcpkg_buildpath_length_warning(44)
         qmltime
         qmltyperegistrar
         qmldom
-        qmltc
-        qmlls
     )
 
 qt_install_submodule(PATCHES    ${${PORT}_PATCHES}
@@ -28,3 +24,8 @@ qt_install_submodule(PATCHES    ${${PORT}_PATCHES}
                      CONFIGURE_OPTIONS_RELEASE
                      CONFIGURE_OPTIONS_DEBUG
                     )
+
+# remove `${SOURCE_PATH}` from the front of `#line` directives
+if(NOT QT_UPDATE_VERSION)
+    vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/Qt6/QtQml/${QT_VERSION}/QtQml/private/qqmljsparser_p.h" "${SOURCE_PATH}" "")
+endif()

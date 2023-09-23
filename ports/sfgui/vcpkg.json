@@ -1,18 +1,10 @@
 {
   "name": "sfgui",
-  "version": "0.4.0",
-  "port-version": 6,
+  "version-string": "0.4.0",
+  "port-version": 4,
   "description": "simple and fast graphical user interface library",
   "homepage": "https://github.com/TankOs/SFGUI",
   "dependencies": [
-    "sfml",
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    },
-    {
-      "name": "vcpkg-cmake-config",
-      "host": true
-    }
+    "sfml"
   ]
 }

@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
 project(libxmlmm CXX)
 
+set(CMAKE_SHARED_LIBRARY_PREFIX)
+set(CMAKE_STATIC_LIBRARY_PREFIX)
+
 find_package(LibXml2 REQUIRED)
 
 set(HEADERS_LIBXMLMM
@@ -35,26 +38,22 @@ set(SOURCES_LIBXMLMM
 )
 
 add_library(libxmlmm ${SOURCES_LIBXMLMM})
-target_link_libraries (libxmlmm PUBLIC LibXml2::LibXml2)
+include_directories(${LIBXML2_INCLUDE_DIR})
+target_link_libraries (libxmlmm ${LIBXML2_LIBRARIES})
 
 set_target_properties(libxmlmm PROPERTIES
     CXX_STANDARD 17
     PUBLIC_HEADER "${HEADERS_LIBXMLMM}"
-    PREFIX ""
 )
 
 target_include_directories(libxmlmm PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libxmlmm>
     $<INSTALL_INTERFACE:include/libxmlmm>)
 
-install(TARGETS libxmlmm
-    EXPORT unofficial-libxmlmm-targets
+install(TARGETS ${PROJECT_NAME}
+    EXPORT litehtmlTargets
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     PUBLIC_HEADER DESTINATION include/libxmlmm
-)
-install(EXPORT unofficial-libxmlmm-targets
-    NAMESPACE unofficial::libxmlmm::
-    DESTINATION share/unofficial-libxmlmm
 )

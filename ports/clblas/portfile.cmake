@@ -7,7 +7,6 @@ vcpkg_from_github(
     PATCHES
         cmake.patch
         Fix-BuildDLL.patch
-        abs-arm.patch
 )
 
 # v2.12 has a very old FindOpenCL.cmake using OPENCL_ vs. OpenCL_ var names

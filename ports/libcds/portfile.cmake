@@ -12,8 +12,9 @@ vcpkg_from_github(
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" DISABLE_INSTALL_STATIC)
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" DISABLE_INSTALL_SHARED)
 
-vcpkg_cmake_configure(
-    SOURCE_PATH "${SOURCE_PATH}"
+vcpkg_configure_cmake(
+    SOURCE_PATH ${SOURCE_PATH}
+    PREFER_NINJA
     OPTIONS
         -DENABLE_UNIT_TEST=OFF
         -DENABLE_STRESS_TEST=OFF
@@ -22,14 +23,14 @@ vcpkg_cmake_configure(
         "-DLIB_SUFFIX="
 )
 
-vcpkg_cmake_install()
+vcpkg_install_cmake()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
-vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/LibCDS)
+vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/LibCDS)
 
 file(INSTALL
-    "${SOURCE_PATH}/LICENSE"
-    DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+    ${SOURCE_PATH}/LICENSE
+    DESTINATION ${CURRENT_PACKAGES_DIR}/share/libcds RENAME copyright)
 
 vcpkg_copy_pdbs()

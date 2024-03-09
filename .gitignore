@@ -12,6 +12,9 @@
 *.sln.docstates
 /vcpkg.json
 /vcpkg-configuration.json
+/server-optimized
+/client
+/azeroth
 
 # fuzzing
 sync_dir*

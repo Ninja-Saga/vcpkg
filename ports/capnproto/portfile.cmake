@@ -4,12 +4,17 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO capnproto/capnproto
     REF "v${VERSION}"
-    SHA512 56551ecad52cf06e5dd52401e6d848eae41126c6ba2bb31a9ec1c82e1b47e0e6171d69db923c118c614aec0d396ddf35724081cccef3a605c39d0b5379a2c03e
+    SHA512 6f31294ffe613b28ee891a7e7465d35781697dc7ed51f806b7c707c8fc94ead01099ab356041646e382320ff922f40c393b4b58f3106bbc3fb547386d7c0ed1a
     HEAD_REF master
     PATCHES
-        disable-C-20-co-routines.patch
         undef-KJ_USE_EPOLL-for-ANDROID_PLATFORM-23.patch
 )
+
+if(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)
+    # In ARM64 it fails without /bigobj
+    set(VCPKG_CXX_FLAGS "${VCPKG_CXX_FLAGS} /bigobj")
+    set(VCPKG_C_FLAGS "${VCPKG_C_FLAGS} /bigobj")
+endif()
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES

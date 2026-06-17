@@ -1,16 +1,32 @@
+set(PATCHES
+    fix-dependencies.patch
+    fix-static-ffmpeg.patch
+    imath-version-guard.patch
+    fix-openimageio_include_dir.patch
+    fix-openexr-target-missing.patch
+)
+
+if(VCPKG_TARGET_IS_OSX)
+    execute_process(COMMAND xcrun --show-sdk-version
+            OUTPUT_VARIABLE OSX_SDK_VERSION
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+    # macOS 26 Tahoe has removed AGL APIs https://bugreports.qt.io/browse/QTBUG-137687
+    #
+    # macOS 26.2 fails to query this with the following error, so we conservatively apply the patch in that case
+    # xcodebuild: error: SDK "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk" cannot be located.
+    # xcrun: error: unable to lookup item 'SDKVersion' in SDK '/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk'
+    if(NOT OSX_SDK_VERSION OR OSX_SDK_VERSION VERSION_GREATER_EQUAL 26)
+        list(APPEND PATCHES remove-agl-framework.patch)
+    endif()
+endif()
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO AcademySoftwareFoundation/OpenImageIO
     REF "v${VERSION}"
-    SHA512 8399d66a757297d646e0d9ce363cfc88a8f7b06d69582857093f13a0a398fc027ea68bf1a97f039320f3fe512c96b4e3ed084295da12359e7574ba460336ce10
+    SHA512 dd5cb30edf8d6c2d61260cc2d91a7a29bbad11b18f83af93527f9308bff0e24b218584635fdad6a154a2c32f0c8c12a458a86261c76c36d9aa41106af8533a39
     HEAD_REF master
-    PATCHES
-        fix-dependencies.patch
-        fix-static-ffmpeg.patch
-        fix-openexr-dll.patch
-        imath-version-guard.patch
-        fix-openimageio_include_dir.patch
-        fix-openexr-target-missing.patch
+    PATCHES ${PATCHES}
 )
 
 file(REMOVE_RECURSE "${SOURCE_PATH}/ext")
@@ -25,6 +41,7 @@ file(REMOVE
     "${SOURCE_PATH}/src/cmake/modules/FindWebP.cmake"
     "${SOURCE_PATH}/src/cmake/modules/Findfmt.cmake"
     "${SOURCE_PATH}/src/cmake/modules/FindTBB.cmake"
+    "${SOURCE_PATH}/src/cmake/modules/FindJXL.cmake"
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
@@ -34,6 +51,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         ffmpeg      USE_FFMPEG
         freetype    USE_FREETYPE
         gif         USE_GIF
+        jpegxl      USE_JXL
         opencv      USE_OPENCV
         openjpeg    USE_OPENJPEG
         webp        USE_WEBP
@@ -42,6 +60,11 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         tools       OIIO_BUILD_TOOLS
         viewer      ENABLE_IV
 )
+
+if("pybind11" IN_LIST FEATURES)
+    vcpkg_get_vcpkg_installed_python(PYTHON3)
+    list(APPEND FEATURE_OPTIONS "-DPython3_EXECUTABLE=${PYTHON3}")
+endif()
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
@@ -56,6 +79,7 @@ vcpkg_cmake_configure(
         -DUSE_TBB=OFF
         -DLINKSTATIC=OFF # LINKSTATIC breaks library lookup
         -DBUILD_MISSING_FMT=OFF
+        -DOIIO_INTERNALIZE_FMT=OFF  # carry fmt's msvc utf8 usage requirements
         -DBUILD_MISSING_ROBINMAP=OFF
         -DBUILD_MISSING_DEPS=OFF
         -DSTOP_ON_WARNING=OFF
@@ -67,9 +91,16 @@ vcpkg_cmake_configure(
         "-DREQUIRED_DEPS=fmt;JPEG;PNG;Robinmap"
     MAYBE_UNUSED_VARIABLES
         ENABLE_INSTALL_testtex
+        ENABLE_IV
+        BUILD_MISSING_DEPS
+        BUILD_MISSING_FMT
+        BUILD_MISSING_ROBINMAP
+        REQUIRED_DEPS
 )
 
 vcpkg_cmake_install()
+
+vcpkg_copy_pdbs()
 
 vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/OpenImageIO)
 
@@ -87,12 +118,16 @@ if("viewer" IN_LIST FEATURES)
     )
 endif()
 
-# Clean
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/share/doc"
                     "${CURRENT_PACKAGES_DIR}/debug/include"
                     "${CURRENT_PACKAGES_DIR}/debug/share")
 
 vcpkg_fixup_pkgconfig()
+
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+    vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/OpenImageIO/export.h" "ifdef OIIO_STATIC_DEFINE" "if 1")
+endif()
+
 
 file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE.md")

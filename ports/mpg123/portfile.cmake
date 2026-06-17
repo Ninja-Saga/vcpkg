@@ -3,12 +3,10 @@ vcpkg_from_sourceforge(
     REPO mpg123/mpg123
     REF "${VERSION}"
     FILENAME "mpg123-${VERSION}.tar.bz2"
-    SHA512 5dd550e06f5d0d432cac1b7e546215e56378b44588c1a98031498473211e08bc4228de45be41f7ba764f7f6c0eb752a6501235bcc3712c9a8d8852ae3c607d98
+    SHA512 9b7aa93b692132da7eb8dcfef12ce91bf66bf8475af50e9c57d7b80225f96c0e74264e518e558371af1f4cf6d2afda5b3dfc844949fd747db7ac7c44d0e9f6ad
     PATCHES
-        fix-checktypesize.patch
-        fix-modulejack.patch
-        fix-m1-build.patch
-        fix-modules-cmake-cflags.patch
+        have-fpu.diff
+        pkgconfig.diff
 )
 
 if(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)
@@ -25,9 +23,13 @@ vcpkg_cmake_configure(
     OPTIONS
         -DUSE_MODULES=OFF
         -DBUILD_PROGRAMS=OFF
+        -DCMAKE_DISABLE_FIND_PACKAGE_ALSA=ON
+        -DCMAKE_DISABLE_FIND_PACKAGE_PkgConfig=ON
         ${options}
     MAYBE_UNUSED_VARIABLES
         BUILD_PROGRAMS
+        CMAKE_DISABLE_FIND_PACKAGE_ALSA
+        CMAKE_DISABLE_FIND_PACKAGE_PkgConfig
 )
 vcpkg_cmake_install()
 vcpkg_copy_pdbs()

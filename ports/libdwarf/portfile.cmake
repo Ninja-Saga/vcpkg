@@ -2,13 +2,13 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO davea42/libdwarf-code
     REF "v${VERSION}"
-    SHA512 8e1addaf2b970db792c4488fa416b712c7b48dfe501bbfd5c40a7eaf71f07377abaa70f682982d11de9cf9573d8fd8dc5fd16c020eb9b68b5be558139a0799a1
+    SHA512 e8eb74c622cedb512d82dff313ce9c5ac2064a7a7a0691c776213b384c1c64d0f549aaab1ef732dcba8c72d52048cea641d9909d3b2503cf96760ad8e81ae77c
     HEAD_REF main
     PATCHES
-        include-dir.diff
+        include-dir.diff # avoid dwarf.h conflict with elfutils
         dependencies.diff
         msvc-runtime.diff
-        off_t.diff
+        dwarfdump-conf.diff # no absolute paths
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" BUILD_NON_SHARED)
@@ -33,6 +33,22 @@ if(BUILD_SHARED)
     vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/libdwarf/libdwarf.h" "ifndef LIBDWARF_STATIC" "if 1")
 endif()
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+file(REMOVE_RECURSE
+    "${CURRENT_PACKAGES_DIR}/debug/include"
+    "${CURRENT_PACKAGES_DIR}/debug/share"
+    "${CURRENT_PACKAGES_DIR}/share/libdwarf/Findzstd.cmake"
+)
 
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING")
+file(COPY_FILE "${SOURCE_PATH}/src/lib/libdwarf/COPYING" "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/libdwarf COPYING")
+file(COPY_FILE "${SOURCE_PATH}/src/bin/dwarfdump/COPYING" "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/dwarfdump COPYING")
+file(COPY_FILE "${SOURCE_PATH}/src/bin/dwarfgen/COPYING" "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/dwarfgen COPYING")
+vcpkg_install_copyright(FILE_LIST
+    "${SOURCE_PATH}/COPYING"
+    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/libdwarf COPYING"
+    "${SOURCE_PATH}/src/lib/libdwarf/LIBDWARFCOPYRIGHT"
+    "${SOURCE_PATH}/src/lib/libdwarf/LGPL.txt"
+    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/dwarfdump COPYING"
+    "${SOURCE_PATH}/src/bin/dwarfdump/DWARFDUMPCOPYRIGHT"
+    "${SOURCE_PATH}/src/bin/dwarfdump/GPL.txt"
+    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/dwarfgen COPYING"
+)

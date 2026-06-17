@@ -2,11 +2,12 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO LMDB/lmdb
     REF "LMDB_${VERSION}"
-    SHA512 a5763ff94af0b5bbc2406c52890797e6232e77593bacdb240441ed30c8634e4e6de6eba206880475544e21561ccd0be2dee16733d6ec35483eb1dbbb81913a8d
+    SHA512 ef2e10eac846a723b44d365cbbeb539b6d9ed75db43e4509b3cbea819372b74c01ff65e728d8dc5eae3c0258bb57e0304334005fee5819a68325d32cd72ab633
     HEAD_REF master
     PATCHES
         getopt-win32.diff
 )
+
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/cmake/" DESTINATION "${SOURCE_PATH}/libraries/liblmdb")
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS options_release

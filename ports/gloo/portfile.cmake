@@ -1,12 +1,10 @@
 vcpkg_from_github(
   OUT_SOURCE_PATH SOURCE_PATH
   REPO facebookincubator/gloo
-  REF 1da21174054eaabbbd189b7f657ea24842d821e2
-  SHA512 ebd8369e413aee739a3928f8e6738c15708f009e0cd5a3763b8cadbe6f6d0a9d758585a7a2b0f7dd6d39a12882ff2f9497ab2d4edcebd4eb2a7237ab857f317e
+  REF 3135b0b41b67dde590eef0938a0bf3d6238df5f7
+  SHA512 32a45ed9fe1f28cce3ca95640bd87b638c122c1a33cbb29f6761feb6ae0bd10db53de6f4abe79991e08797551b783b7244446f11a094c1707cc54ce4ecb29ad6
   HEAD_REF master
-  PATCHES
-      fix-array.patch #https://github.com/facebookincubator/gloo/issues/332
-  )
+)
 
 # Determine which backend to build via specified feature
 vcpkg_check_features(
@@ -14,15 +12,26 @@ vcpkg_check_features(
   FEATURES
   mpi USE_MPI
   redis USE_REDIS
+  cuda USE_CUDA
+  cuda USE_NCCL
   )
 
 if ("cuda" IN_LIST FEATURES)
-  list(APPEND GLOO_FEATURE_OPTIONS "-DUSE_CUDA=1" "-DUSE_NCCL=1")
+  vcpkg_find_cuda(OUT_CUDA_TOOLKIT_ROOT cuda_toolkit_root)
+  list(APPEND GLOO_FEATURE_OPTIONS
+    "-DCMAKE_CUDA_COMPILER:FILEPATH=${NVCC}"
+    "-DCUDAToolkit_ROOT=${cuda_toolkit_root}"
+    "-DCMAKE_CUDA_STANDARD=20"
+    "-DGLOO_USE_CUDA_TOOLKIT=ON"
+  )
 endif()
 
 vcpkg_cmake_configure(
   SOURCE_PATH "${SOURCE_PATH}"
   OPTIONS ${GLOO_FEATURE_OPTIONS}
+  MAYBE_UNUSED_VARIABLES
+    CMAKE_CUDA_COMPILER
+    CUDAToolkit_ROOT
   )
 vcpkg_cmake_install()
 vcpkg_copy_pdbs()
@@ -31,4 +40,4 @@ vcpkg_cmake_config_fixup(CONFIG_PATH share/cmake/Gloo)
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")

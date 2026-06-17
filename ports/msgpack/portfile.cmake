@@ -5,9 +5,14 @@ endif()
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO msgpack/msgpack-c
-    REF cpp-6.0.0
-    SHA512 6f2ec74562f30d12ba81659737c412317848eb27fbc607a2f4f8da4b75534fbfba7d280a5af6fdae3581a6a2582e6cf06d7fbfacc3bdee1174456817dd9f7e30
+    REF cpp-${VERSION}
+    SHA512 23e1fa14c9d1bcf70b74ebb6d2379691a3224022a5b5a186c48e0c3c0af54eb6c755bcbaf900024ecaafb031a450c34e207cd4d66bdfb701ffef44fc06d87915
     HEAD_REF cpp_master
+)
+
+vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
+    FEATURES
+        boost MSGPACK_USE_BOOST
 )
 
 vcpkg_cmake_configure(
@@ -16,6 +21,7 @@ vcpkg_cmake_configure(
         -DMSGPACK_BUILD_EXAMPLES=OFF
         -DMSGPACK_BUILD_TESTS=OFF
         -DMSGPACK_BUILD_DOCS=OFF
+        ${FEATURE_OPTIONS}
 )
 
 vcpkg_cmake_install()

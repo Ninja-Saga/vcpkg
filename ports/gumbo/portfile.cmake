@@ -1,11 +1,15 @@
 vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 
-vcpkg_from_github(
-  OUT_SOURCE_PATH SOURCE_PATH
-  REPO google/gumbo-parser
-  REF v0.10.1
-  SHA512  bb1fb55cd07076ab6a9f38dc14db50397dbdca9a04ace4895dfba8b8cbc09038a96e26070c09c75fa929ada2e815affe233c1e2ecd8afe2aba6201647cf277d1
-  HEAD_REF master
+vcpkg_download_distfile(ARCHIVE
+    URLS "https://codeberg.org/gumbo-parser/gumbo-parser/archive/${VERSION}.tar.gz"
+    FILENAME "gumbo-${VERSION}.tar.gz"
+    SHA512  1513e88acfc3240081039b30ab63ca6fc23a85b7d1415cb8e90e9c43f9c3d99d37634a7a50d81ef7f6d43a4facac3802feea6959256a2330b26b16523a288568
+)
+
+vcpkg_extract_source_archive(
+    SOURCE_PATH
+    ARCHIVE "${ARCHIVE}"
+    SOURCE_BASE "${VERSION}"
 )
 
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt" DESTINATION "${SOURCE_PATH}")
@@ -25,4 +29,4 @@ vcpkg_fixup_pkgconfig()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 
-file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/gumbo" RENAME copyright)
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/doc/COPYING")

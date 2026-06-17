@@ -1,9 +1,16 @@
+# libsodium has a special branching/tagging scheme, where regular version tags can actually be moved
+# as new patches are applied to that version. This means that we may get unexpected hash mismatches
+# when the upstream tag points to a new commit. To avoid this, we must make sure that we always
+# use a '-RELEASE' tag, since those seem to be fixed to a single commit.
+# See https://github.com/jedisct1/libsodium/issues/1373#issuecomment-2135172301 for more info.
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO jedisct1/libsodium
-    REF ${VERSION}
-    SHA512 6094d7bf191ea3be85f2ddab76b71f1b9c69c786493db5b84d3c5d5a0237003377ddf6a8687a962ea651fe4a9369cf5ee1676ba0bae82690f5f7ef31a698efa9
+    REF "${VERSION}-RELEASE"
+    SHA512 f8e11ad193037b7b885a40b832da331105f4e5943b74c0297fe07e02a313786016c777aebb094ad1fcf16398e54af545c2d55404c28b371eae5922d1e164ba00
     HEAD_REF master
+    PATCHES
+        001-mingw-i386.patch
 )
 
 if(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)
@@ -42,11 +49,19 @@ if(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)
         endif()
     endblock()
 else()
-    vcpkg_configure_make(
-        AUTOCONFIG
+    if(VCPKG_TARGET_IS_EMSCRIPTEN)
+        list(APPEND OPTIONS "--disable-ssp" "--disable-asm")
+    endif()
+    if(NOT VCPKG_TARGET_IS_MINGW)
+        list(APPEND OPTIONS --disable-pie)
+    endif()
+
+    vcpkg_make_configure(
+        AUTORECONF
         SOURCE_PATH "${SOURCE_PATH}"
+        OPTIONS ${OPTIONS}
     )
-    vcpkg_install_make()
+    vcpkg_make_install()
 
     file(REMOVE_RECURSE
         "${CURRENT_PACKAGES_DIR}/debug/include"

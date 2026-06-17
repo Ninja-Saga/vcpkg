@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO symengine/symengine
     REF "v${VERSION}"
-    SHA512 076aac35428589c5b3524a46bd939a3a3a7da44b1c866b5f71487678b27b6e48b4da034029f1630881d7713a9252e905411a04b8016c9ec56a608b6de23365ac
+    SHA512 2b6012ed65064ff81c8828032c5a3148340582274e3604db2a43797ddbaa191520ed97da41efc2e842ba4a25326f53becc51f1e98935e8c34625bc5eaac8397f
     HEAD_REF master
 )
 
@@ -56,6 +56,7 @@ vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/symengine/SymEngineConfig.cm
 vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/symengine/SymEngineConfig.cmake"
     [[${SYMENGINE_CMAKE_DIR}/../../../include]]
     [[${SYMENGINE_CMAKE_DIR}/../../include]]
+    IGNORE_UNCHANGED
 )
 
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")

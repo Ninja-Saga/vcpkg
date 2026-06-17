@@ -3,7 +3,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO taskflow/taskflow
     REF "v${VERSION}"
-    SHA512 1bf17b69cdb29b982fc74b9091f5b6c8fc4fd3004b26afe7e73e71569738e492cf8663b71d98cfbc4e240c08ceb8a99bf51cccce95254710722f89929a4bbea8
+    SHA512 01da8c002774bac0e1651e32ca9cb6041ab17b78b2301f399640e0888d86fcd65657db7942e77b8a561dcefc0f137f4d698fd491d00fa1670ff85608d0e7597d
     HEAD_REF master
 )
 
@@ -14,7 +14,6 @@ vcpkg_cmake_configure(
         -DTF_BUILD_CUDA=OFF
         -DTF_BUILD_TESTS=OFF
         -DTF_BUILD_EXAMPLES=OFF
-        -DBUILD_TESTING=OFF
         -DCMAKE_CUDA_COMPILER=OFF
 )
 

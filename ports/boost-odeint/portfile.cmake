@@ -4,9 +4,15 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO boostorg/odeint
     REF boost-${VERSION}
-    SHA512 ea48b08fe00b9075af80f6f2614a639fd84b146ecfed229ae2ce23745a6a6d85b4d607ee2b199134848c87562ef8145aba0ff063a862653b3f01512de5717234
+    SHA512 a45cef00df24aed7d0381a868d330ea27d30224d2c599f2dfdc2d820564393be0a70a106843a123b35f1d34dd4d2b37cf22085261b4b6bee40d63bd4c2ef5aa1
     HEAD_REF master
+    PATCHES
+        opt-mpi.diff
 )
 
-include(${CURRENT_INSTALLED_DIR}/share/boost-vcpkg-helpers/boost-modular-headers.cmake)
-boost_modular_headers(SOURCE_PATH ${SOURCE_PATH})
+set(FEATURE_OPTIONS "")
+include("${CMAKE_CURRENT_LIST_DIR}/features.cmake")
+boost_configure_and_install(
+    SOURCE_PATH "${SOURCE_PATH}"
+    OPTIONS ${FEATURE_OPTIONS}
+)

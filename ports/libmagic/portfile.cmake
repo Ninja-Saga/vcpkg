@@ -1,7 +1,7 @@
+set(extra_patches "")
 if(VCPKG_TARGET_IS_WINDOWS)
-    set(PATCHES
+    list(APPEND extra_patches
         "0001-Use-libtre.patch"
-        "0002-Change-zlib-lib-name-to-match-CMake-output.patch"
         "0003-Fix-WIN32-macro-checks.patch"
         "0004-Typedef-POSIX-types-on-Windows.patch"
         "0005-Include-dirent.h-for-S_ISREG-and-S_ISDIR.patch"
@@ -17,13 +17,17 @@ if(VCPKG_TARGET_IS_WINDOWS)
     )
 endif()
 
+string(REGEX REPLACE "^([0-9]+)\\.([0-9]+)$" "FILE\\1_\\2" FILE_REF "${VERSION}")
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO file/file
-    REF FILE5_45
-    SHA512 fdd4c5d13d5ea1d25686c76d8ebc3252c54040c4871e3f0f623c4548b3841795d4e36050292a9453eedf0fbf932573890e9d6ac9fa63ccf577215598ae84b9ea
+    REF "${FILE_REF}"
+    SHA512 9ef8d1efd744115b0f28a7bef1a6b3e25c6feb71f6e37590bc18fe49e77d55adddb712527fd3c4080e0b70f13c5f33cdce3ce932e99a751e6de6a0e8b381c30a
     HEAD_REF master
-    PATCHES ${PATCHES}
+    PATCHES
+        0002-Change-zlib-lib-name-to-match-CMake-output.patch
+        0017-Change-bzlib-name-to-match-CMake-output.patch
+        ${extra_patches}
 )
 
 if(VCPKG_TARGET_IS_WINDOWS)
@@ -31,9 +35,35 @@ if(VCPKG_TARGET_IS_WINDOWS)
     set(VCPKG_CXX_FLAGS "${VCPKG_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS")
 endif()
 
+if(VCPKG_TARGET_IS_WINDOWS AND VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+    set(VCPKG_C_FLAGS "${VCPKG_C_FLAGS} -DBUILD_AS_WINDOWS_STATIC_LIBARAY")
+    set(VCPKG_CXX_FLAGS "${VCPKG_CXX_FLAGS} -DBUILD_AS_WINDOWS_STATIC_LIBARAY")
+endif()
+
+set(FEATURE_OPTIONS)
+
+macro(enable_feature feature switch)
+    if("${feature}" IN_LIST FEATURES)
+        list(APPEND FEATURE_OPTIONS "--enable-${switch}")
+        set(has_${feature} 1)
+    else()
+        list(APPEND FEATURE_OPTIONS "--disable-${switch}")
+        set(has_${feature} 0)
+    endif()
+endmacro()
+
+enable_feature("bzip2" "bzlib")
+enable_feature("zlib" "zlib")
+enable_feature("lzma" "xzlib")
+enable_feature("zstd" "zstdlib")
+
 vcpkg_configure_make(
     AUTOCONFIG
     SOURCE_PATH "${SOURCE_PATH}"
+    OPTIONS
+        ${FEATURE_OPTIONS}
+        "--disable-lzlib"
+        "--disable-libseccomp"
 )
 
 if(VCPKG_CROSSCOMPILING)

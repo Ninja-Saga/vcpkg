@@ -9,15 +9,18 @@ endif()
 vcpkg_find_acquire_program(FLEX)
 vcpkg_find_acquire_program(BISON)
 
-vcpkg_from_github(
-    OUT_SOURCE_PATH SOURCE_PATH
-    REPO apache/thrift
-    REF "${VERSION}"
-    SHA512 f9bfaf149dde4da1f5353e540b862c2088465115564d981bf02cd89e8c1f84ca53143ca0091b63d24f8f515425d9163af52ec6122245b59810a2b98292a71650
-    HEAD_REF master
+vcpkg_download_distfile(ARCHIVE
+    URLS "https://archive.apache.org/dist/thrift/${VERSION}/thrift-${VERSION}.tar.gz"
+    FILENAME "thrift-${VERSION}.tar.gz"
+    SHA512 a57c6fa645852f22ca10380621facc193393b19d1d760e113baa0f964365839043f2b527bd8cd3c03808380e9f09e9a8f707f8abbd931c51632e9d5181a459cf
+)
+
+vcpkg_extract_source_archive(
+    SOURCE_PATH
+    ARCHIVE "${ARCHIVE}"
     PATCHES
-      "correct-paths.patch"
-      "pc-suffix.patch"
+        pc-suffix.patch
+        fix_missing_quotes_in_config_and_bin_path.patch
 )
 
 if (VCPKG_TARGET_IS_OSX)
@@ -67,7 +70,6 @@ vcpkg_cmake_configure(
         CMAKE_REQUIRE_FIND_PACKAGE_Libevent
         CMAKE_REQUIRE_FIND_PACKAGE_OpenSSL
         CMAKE_REQUIRE_FIND_PACKAGE_ZLIB
-    
 )
 
 vcpkg_cmake_install()

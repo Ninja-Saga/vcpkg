@@ -5,14 +5,17 @@ vcpkg_from_gitlab(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO dbus/dbus
     REF "dbus-${VERSION}"
-    SHA512 8e476b408514e6540c36beb84e8025827c22cda8958b6eb74d22b99c64765eb3cd5a6502aea546e3e5f0534039857b37edee89c659acef40e7cab0939947d4af
+    SHA512 8ad3ab55bf6e2bbe6ff871302c2840c0cb82b4ec785b05f146c577ca1e931825084012ac90251e28c30e44d111e5ca5711b29349f4f0e68a09ba49392e63ac89
     HEAD_REF master
-    PATCHES 
+    PATCHES
         cmake.dep.patch
         pkgconfig.patch
         getpeereid.patch # missing check from configure.ac
         libsystemd.patch
-) 
+        remove-path.patch
+        remove-var-lib-dbus-creation.patch
+        session-socket-dir.diff
+)
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS options
     FEATURES
@@ -20,6 +23,12 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS options
         x11     DBUS_BUILD_X11
         x11     CMAKE_REQUIRE_FIND_PACKAGE_X11
 )
+
+if(NOT VCPKG_TARGET_IS_WINDOWS)
+    # Without this change, the library hardcodes vcpkg's package staging directory.
+    # Change to the expected system location.
+    list(APPEND options "-DDBUS_RUNSTATEDIR=/run")
+endif()
 
 unset(ENV{DBUSDIR})
 
@@ -53,7 +62,7 @@ vcpkg_cmake_configure(
 vcpkg_cmake_install()
 vcpkg_copy_pdbs()
 vcpkg_cmake_config_fixup(PACKAGE_NAME "DBus1" CONFIG_PATH "lib/cmake/DBus1")
-vcpkg_fixup_pkgconfig() 
+vcpkg_fixup_pkgconfig()
 
 file(REMOVE_RECURSE
     "${CURRENT_PACKAGES_DIR}/debug/include"
@@ -83,6 +92,9 @@ else()
     list(APPEND TOOLS cleanup-sockets uuidgen)
 endif()
 list(TRANSFORM TOOLS PREPEND "dbus-" )
+if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
+    vcpkg_copy_tools(TOOL_NAMES ${TOOLS} SEARCH_DIR ${CURRENT_PACKAGES_DIR}/debug/bin DESTINATION "${CURRENT_PACKAGES_DIR}/debug/tools/${PORT}")
+endif()
 vcpkg_copy_tools(TOOL_NAMES ${TOOLS} AUTO_CLEAN)
 
-file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING")

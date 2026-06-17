@@ -4,17 +4,18 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO jrouwe/JoltPhysics
     REF "v${VERSION}"
-    SHA512 9b7530c37fc865682c4a130afc87daef1b038d1f457d2330a5253f35e3a4b6399ad738e97961f0ca8a9ae41ed999179e1c864dc699c5c93341ce4b6e6b2a1a61
+    SHA512 1bdf5e8a3c5d405808c2250f307a31c4a6180af5e911a8dd1560f065a84ee1500cf8a539ea0af466f484ef46f6ac34886edcdb3b5157e4dbad0db886e442087c
     HEAD_REF master
-    PATCHES
-      fix-export.diff
 )
 
-# Need to provide this library a config
-# The fix-export.diff should install this
-file(COPY "${CMAKE_CURRENT_LIST_DIR}/unofficial-joltphysics-config.cmake" DESTINATION "${SOURCE_PATH}/Build")
-
 string(COMPARE EQUAL "${VCPKG_CRT_LINKAGE}" "static" USE_STATIC_CRT)
+
+vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
+    FEATURES
+        debugrenderer       DEBUG_RENDERER_IN_DEBUG_AND_RELEASE
+        profiler            PROFILER_IN_DEBUG_AND_RELEASE
+        rtti                CPP_RTTI_ENABLED
+)
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}/Build"
@@ -28,6 +29,8 @@ vcpkg_cmake_configure(
         -DINTERPROCEDURAL_OPTIMIZATION=OFF
         -DUSE_STATIC_MSVC_RUNTIME_LIBRARY=${USE_STATIC_CRT}
         -DENABLE_ALL_WARNINGS=OFF
+        -DOVERRIDE_CXX_FLAGS=OFF
+        ${FEATURE_OPTIONS}
     OPTIONS_RELEASE
         -DGENERATE_DEBUG_SYMBOLS=OFF
 )
@@ -37,8 +40,6 @@ vcpkg_copy_pdbs()
 vcpkg_fixup_pkgconfig()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
-vcpkg_cmake_config_fixup(CONFIG_PATH share/unofficial-${PORT} PACKAGE_NAME unofficial-${PORT})
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
+vcpkg_cmake_config_fixup(PACKAGE_NAME Jolt CONFIG_PATH "lib/cmake/Jolt")
 
-file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")

@@ -1,23 +1,21 @@
-vcpkg_from_gitlab(
-    GITLAB_URL https://code.videolan.org
+vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO videolan/dav1d
     REF "${VERSION}"
-    SHA512 7f02c1e65fb79352a159cc60346e02d5844c01d1228f860f802c553799ae0213e76ccc81ff427913e89bd3cfcf0185ea063cf3b6f7c4242faa76962ebd661e5e
+    SHA512 8d976b93135213d41385c20205475269a6826a68ebfd716c4d9a7a3ff2a79703e8df0573e43207c81b5db44807d2721db18ec84c0fc6bef98efab86a2cccb6cc
+    HEAD_REF master
 )
 
-vcpkg_find_acquire_program(NASM)
-get_filename_component(NASM_EXE_PATH ${NASM} DIRECTORY)
-vcpkg_add_to_path(${NASM_EXE_PATH})
-
-if (VCPKG_TARGET_ARCHITECTURE STREQUAL "arm" OR VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64")
-    if(VCPKG_TARGET_IS_WINDOWS)
-        vcpkg_find_acquire_program(GASPREPROCESSOR)
-        foreach(GAS_PATH ${GASPREPROCESSOR})
-            get_filename_component(GAS_ITEM_PATH ${GAS_PATH} DIRECTORY)
-            set(ENV{PATH} "$ENV{PATH}${VCPKG_HOST_PATH_SEPARATOR}${GAS_ITEM_PATH}")
-        endforeach(GAS_PATH)
-    endif()
+if (VCPKG_TARGET_ARCHITECTURE STREQUAL "x86" OR VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
+    vcpkg_find_acquire_program(NASM)
+    get_filename_component(NASM_EXE_PATH ${NASM} DIRECTORY)
+    vcpkg_add_to_path(${NASM_EXE_PATH})
+elseif (VCPKG_TARGET_IS_WINDOWS)
+    vcpkg_find_acquire_program(GASPREPROCESSOR)
+    foreach(GAS_PATH ${GASPREPROCESSOR})
+        get_filename_component(GAS_ITEM_PATH ${GAS_PATH} DIRECTORY)
+        vcpkg_add_to_path(${GAS_ITEM_PATH})
+    endforeach(GAS_PATH)
 endif()
 
 set(LIBRARY_TYPE ${VCPKG_LIBRARY_LINKAGE})

@@ -2,27 +2,31 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO winsoft666/zoe
     HEAD_REF master
-    REF c4de5eef2139050dc6919170487bc5c5044c9fcf
-    SHA512 72e439b27405784878c1784fbac7308b021636231402e1fd88cfe3e850f0f539d726dc121278bbe3017aea613c6d4dff0a4034ad5488ebea06d681d81e4c8063
+    REF "v${VERSION}"
+    SHA512 af895f772b465b34eb938b712bfd9b00bb170d23125e05161843293c13329bfc1147bd22ce990b189580d0946b94e725b99cefaafd3aeca758de5c6a55bc33a9
+    PATCHES
+        cmake.diff
+)
+
+vcpkg_check_features(OUT_FEATURE_OPTIONS options
+    FEATURES
+        openssl     VCPKG_LOCK_FIND_PACKAGE_OpenSSL
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" ZOE_BUILD_SHARED_LIBS)
-string(COMPARE EQUAL "${VCPKG_CRT_LINKAGE}" "static" ZOE_USE_STATIC_CRT)
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
         -DZOE_BUILD_SHARED_LIBS:BOOL=${ZOE_BUILD_SHARED_LIBS}
-        -DZOE_USE_STATIC_CRT:BOOL=${ZOE_USE_STATIC_CRT}
         -DZOE_BUILD_TESTS:BOOL=OFF
+        ${options}
 )
 
 vcpkg_cmake_install()
-
-vcpkg_cmake_config_fixup(CONFIG_PATH share/zoe)
-
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
+vcpkg_cmake_config_fixup()
+vcpkg_copy_pdbs()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 
-vcpkg_copy_pdbs()
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")

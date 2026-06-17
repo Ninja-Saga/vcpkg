@@ -3,14 +3,14 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO Open-Cascade-SAS/OCCT
     REF "${VERSION_STR}"
-    SHA512 af176cbd105c49949282c16bb6e30f69167bc6c00a50e0ae69aea555815d47ac3c4540c233e596c5add7cb846c2b33d7be267d8e02472286e758b662b4a652ab
+    SHA512 fc5a57a25677f73b1adff8e94a901a11ff62109f16f447f2c8e8effe490ba501a705d8149a42f6c05f8a1524a5e9071df0566b48497cd58b0898a7e69b2c676b
     HEAD_REF master
     PATCHES
-        dependencies.patch
-        drop-bin-letter-d.patch
-        fix-pdb-find.patch
-        fix-install-prefix-path.patch
-        install-include-dir.patch
+        0001-cmake-keep-build-use-vcpkg-explicit.patch
+        0002-cmake-load-exported-package-dependencies.patch
+        0003-image-remove-freeimage-msvc-autolink.patch
+        0004-cmake-add-additional-path-extraction-for-OpenCASCADE.patch
+        0005-drop-bin-letter.patch
 )
 
 if (VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
@@ -24,7 +24,6 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         freeimage   USE_FREEIMAGE
         freetype    USE_FREETYPE
         rapidjson   USE_RAPIDJSON
-        samples     INSTALL_SAMPLES
         tbb         USE_TBB
         vtk         USE_VTK
 )
@@ -39,18 +38,15 @@ vcpkg_cmake_configure(
         -DBUILD_LIBRARY_TYPE=${BUILD_TYPE}
         -DBUILD_MODULE_Draw=OFF
         -DBUILD_DOC_Overview=OFF
-        -DBUILD_MODULE_DETools=OFF
         -DINSTALL_DIR_LAYOUT=Unix
         -DINSTALL_DIR_DOC=share/trash
         -DINSTALL_DIR_SCRIPT=share/trash # not relocatable
         -DINSTALL_TEST_CASES=OFF
         -DUSE_TK=OFF
-    OPTIONS_DEBUG
-        -DINSTALL_SAMPLES=OFF
 )
 
 vcpkg_cmake_install()
-
+vcpkg_copy_pdbs()
 vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/opencascade)
 
 #make occt includes relative to source_file
@@ -62,10 +58,12 @@ file(GLOB extra_headers
 list(JOIN extra_headers "|" extra_headers)
 file(GLOB files "${CURRENT_PACKAGES_DIR}/include/opencascade/*.[hgl]xx")
 foreach(file_name IN LISTS files)
-    file(READ "${file_name}" filedata)
-    string(REGEX REPLACE "(# *include) <([a-zA-Z0-9_]*[.][hgl]xx|${extra_headers})>" [[\1 "\2"]] filedata "${filedata}")
-    file(WRITE "${file_name}" "${filedata}")
+    vcpkg_replace_string("${file_name}" "(# *include) <([a-zA-Z0-9_]*[.][hgl]xx|${extra_headers})>" [[\1 "\2"]] REGEX IGNORE_UNCHANGED)
 endforeach()
+
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+    vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/opencascade/Standard_Macro.hxx" "defined(OCCT_STATIC_BUILD)" "(1)")
+endif()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")

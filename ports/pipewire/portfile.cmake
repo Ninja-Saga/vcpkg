@@ -3,8 +3,8 @@ vcpkg_from_gitlab(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO pipewire/pipewire
     REF "${VERSION}"
-    SHA512 3884a64ce4d467665d34ee39e84ab394e4fe7c24bc006efe1f6ba78649e9fe3693c65f2173a4b0bf0979786309a5b12bc8b90aab3f6cbc223db596c44d00f4cc
-    HEAD_REF master # branch name
+    SHA512 e8c1e620f09e2405de432797afb66a39aeb258b9a9f26b4e7aea541498c7690600a1788c863f2df9ba38dc44f0740a6908b7ad347d808511ecef7f9424f5b08d
+    HEAD_REF master
 )
 
 vcpkg_configure_meson(
@@ -43,6 +43,7 @@ vcpkg_configure_meson(
         -Dlibusb=disabled
         -Dlv2=disabled
         -Dman=disabled
+        -Dopus=disabled
         -Dpipewire-alsa=disabled
         -Dpipewire-jack=disabled
         -Dpipewire-v4l2=disabled
@@ -57,7 +58,6 @@ vcpkg_configure_meson(
         -Dsystemd-system-unit-dir=disabled
         -Dsystemd-user-service=disabled
         -Dsystemd-user-unit-dir=disabled
-        -Dsystemd=disabled
         -Dtest=disabled
         -Dtests=disabled
         -Dudev=disabled
@@ -70,6 +70,7 @@ vcpkg_configure_meson(
         -Dx11-xfixes=disabled
         -Dx11=disabled
         -Dsession-managers=[]
+        -Dc_args=-Wno-strict-prototypes
 )
 vcpkg_install_meson()
 vcpkg_copy_pdbs()
@@ -85,9 +86,9 @@ endif()
 # remove absolute paths
 file(GLOB config_files "${CURRENT_PACKAGES_DIR}/share/${PORT}/*.conf")
 foreach(file ${config_files})
-    vcpkg_replace_string("${file}" "in ${CURRENT_PACKAGES_DIR}/etc/pipewire for system-wide changes\n# or" "")
+    vcpkg_replace_string("${file}" "in ${CURRENT_PACKAGES_DIR}/etc/pipewire for system-wide changes\n# or" "" IGNORE_UNCHANGED)
     cmake_path(GET file FILENAME filename)
-    vcpkg_replace_string("${file}" "# ${CURRENT_PACKAGES_DIR}/etc/pipewire/${filename}.d/ for system-wide changes or in" "")
+    vcpkg_replace_string("${file}" "# ${CURRENT_PACKAGES_DIR}/etc/pipewire/${filename}.d/ for system-wide changes or in" "" IGNORE_UNCHANGED)
 endforeach()
 vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/pipewire/pipewire.conf" "${CURRENT_PACKAGES_DIR}/bin" "")
 vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/pipewire/minimal.conf" "${CURRENT_PACKAGES_DIR}/bin" "")

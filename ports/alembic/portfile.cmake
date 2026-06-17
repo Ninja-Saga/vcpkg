@@ -4,10 +4,8 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO alembic/alembic
     REF "${VERSION}"
-    SHA512 6371b830242be90d4ea833248df5fd42d9e713e305d15eb1383d04410319acdae5743d48d65e8f75f1cedce777d2af7d969cde095f678b17322c19f1c69f477b
+    SHA512 f2b5c8158b1d43b73bcc1d64e83f299ae42e922b5ee25b61b02acb6cbf58b1ffc57e53485e0ebe736ff1f5a909b5f59e6faa8c639a89662c39b029dda3206619
     HEAD_REF master
-    PATCHES
-        fix-runtime-destination.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" ALEMBIC_SHARED_LIBS)

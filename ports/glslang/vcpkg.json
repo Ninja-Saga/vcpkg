@@ -1,6 +1,6 @@
 {
   "name": "glslang",
-  "version": "13.1.1",
+  "version": "16.3.0",
   "port-version": 1,
   "description": "Khronos-reference front end for GLSL/ESSL, partial front end for HLSL, and a SPIR-V generator.",
   "homepage": "https://github.com/KhronosGroup/glslang",
@@ -26,8 +26,8 @@
       "description": "Build with dynamic typeinfo"
     },
     "tools": {
-      "description": "Build the glslangValidator and spirv-remap binaries",
-      "supports": "!ios"
+      "description": "Build the glslang binaries",
+      "supports": "!android & !ios"
     }
   }
 }

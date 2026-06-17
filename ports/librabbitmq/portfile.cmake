@@ -1,12 +1,16 @@
 vcpkg_from_github(
   OUT_SOURCE_PATH SOURCE_PATH
   REPO alanxz/rabbitmq-c
-  REF v0.11.0 
-  SHA512 0c3dbb6e2b862e9f25e3f76df798ea272bbd81de2865950b95adf1f1e5791eb20d7c9d5a76cb7d2fda54bad5f12bdf69cbfa7e9fd1afdede6f9ec729ca2287de
+  REF "v${VERSION}"
+  SHA512 7769d96f9fdc8cb8b12851b1b28a389654760906fa3251530bf2351f6af1306fa78c1dcb3850efdf67d4952e46bc910e34b894927e450b8eae8a90954285b527
   HEAD_REF master
   PATCHES
       fix-uwpwarning.patch
-      fix-link-header-files.patch #Remove this patch in the next version
+)
+
+vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
+  FEATURES
+    ssl ENABLE_SSL_SUPPORT
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" BUILD_STATIC)
@@ -14,8 +18,9 @@ string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" BUILD_STATIC)
 vcpkg_cmake_configure(
   SOURCE_PATH "${SOURCE_PATH}"
   OPTIONS
+    ${FEATURE_OPTIONS}
     -DBUILD_EXAMPLES=OFF
-    -DBUILD_TESTS=OFF
+    -DBUILD_TESTING=OFF
     -DBUILD_TOOLS=OFF
     -DBUILD_STATIC_LIBS=${BUILD_STATIC}
 )
@@ -30,4 +35,4 @@ vcpkg_copy_pdbs()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 
-file(INSTALL "${SOURCE_PATH}/LICENSE-MIT" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")

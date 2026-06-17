@@ -5,19 +5,20 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO biojppm/rapidyaml
     REF "v${VERSION}"
-    SHA512 861f1d2c39c5c8d455e8d40e3ecadd828b948c5dea2bcb88ba92686ca77b9a7d69ab2d94407732eab574e4e3c7b319d0f1b31250b18fb513310847192623a2f7
+    SHA512 dc667fe59f393c84b6c39ddae5a76b62c7f68bddab5b046ffc62ca4d75f8e9e22b53ba81036ced35d38948baad4a0df2592eea94a2e1f169c7c11b272dd60937
     HEAD_REF master
-    PATCHES cmake-fix.patch
+    PATCHES
+        cmake-fix.patch
 )
 
-set(CM_COMMIT_HASH fe41e86552046c3df9ba73a40bf3d755df028c1e)
+set(CM_COMMIT_HASH 9b4161420e7af50796bb2c984bbfc7b451cbb668)
 
 # Get cmake scripts for rapidyaml
 vcpkg_download_distfile(
     CMAKE_ARCHIVE
     URLS "https://github.com/biojppm/cmake/archive/${CM_COMMIT_HASH}.zip"
     FILENAME "cmake-${CM_COMMIT_HASH}.zip"
-    SHA512 7292f9856d9c41581f2731e73fdf08880e0f4353b757da38a13ec89b62c5c8cb52b9efc1a9ff77336efa0b6809727c17649e607d8ecacc965a9b2a7a49925237
+    SHA512 d840c28b9144d657b78ddaa69c8061347bf8c9c44ff49bff4eb806369d1d6058dcb091b1cb981e8842c9cd3cebf5c4e5bc5498230ec47dd59d8fb0e38d845f58
 )
 
 vcpkg_extract_source_archive(
@@ -58,7 +59,7 @@ file(RENAME "${CURRENT_PACKAGES_DIR}/include/ryml_std.hpp" "${CURRENT_PACKAGES_D
 file(RENAME "${CURRENT_PACKAGES_DIR}/include/ryml.natvis" "${CURRENT_PACKAGES_DIR}/include/ryml/ryml.natvis")
 
 # Fix paths in headers file
-vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/ryml/ryml.hpp" "./c4" "../c4")
+vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/ryml/ryml.hpp" "./c4" "../c4" IGNORE_UNCHANGED)
 vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/ryml/ryml_std.hpp" "./c4" "../c4")
 
 # Fix paths in config file

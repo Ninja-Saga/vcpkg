@@ -25,9 +25,11 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ned14/outcome
     REF v${VERSION}
-    SHA512 2057f2f967f7aad3f78d081c72130122c1f99b837ce23ec9de9bfe0cd0fc493ce7085071cb2a54a840252ba0d82e14d99d622c1e0fdf9a8a20f41e5f89fa4645
+    SHA512 049c5052dd3bd25d7455a9a9c68a39096a2b877f64e21308520005b00411aaa47304505f68502c693aabdc271d12afd533d77245ed6c6c5249002844d403e684
     HEAD_REF develop
     PATCHES
+        fix-status-code-path.patch
+        files-do-not-exist.patch
 )
 
 # Because outcome's deployed files are header-only, the debug build is not necessary

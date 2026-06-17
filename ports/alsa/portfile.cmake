@@ -15,19 +15,12 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO alsa-project/alsa-lib
     REF "v${VERSION}"
-    SHA512 da9277007dd3b197fcafb748ced4ace89fdb1ab5eafae7596e91935ee9fb410be54fa76aabe86cdd83227e48cd073a7df319e90bdf06fa2da7c97470c085645d
+    SHA512 0b8a7d83a0bbce2153475923dff0fe47ed946a8adf2022f5f99c027465bd1c04a4eb06861c72bd88943b1af9b46b7967f8417f14c0261623e130ebde4e833e5d
     HEAD_REF master
     PATCHES
-        "fix-plugin-dir.patch"
+        fix-plugin-dir.patch
+        libdl.diff
 )
-
-if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
-    set(BUILD_OPTS --enable-shared=yes --enable-static=no)
-else()
-    set(BUILD_OPTS --enable-shared=no --enable-static=yes)
-endif()
-
-
 
 if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
     set(ALSA_PLUGIN_DIR "/usr/lib/x86_64-linux-gnu/alsa-lib")
@@ -44,9 +37,9 @@ else()
 endif()
 set(ALSA_CONFIG_DIR "/usr/share/alsa")
 
-vcpkg_configure_make(
+vcpkg_make_configure(
     SOURCE_PATH "${SOURCE_PATH}"
-    AUTOCONFIG
+    AUTORECONF
     OPTIONS
         ${BUILD_OPTS}
         --disable-python
@@ -54,12 +47,12 @@ vcpkg_configure_make(
         "--with-plugindir=${ALSA_PLUGIN_DIR}"
 )
 
-vcpkg_install_make()
+vcpkg_make_install()
 vcpkg_fixup_pkgconfig()
 
 file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
 
-file(REMOVE_RECURSE 
+file(REMOVE_RECURSE
     "${CURRENT_PACKAGES_DIR}/debug/include"
     "${CURRENT_PACKAGES_DIR}/debug/share"
     "${CURRENT_PACKAGES_DIR}/debug/tools/alsa/debug"

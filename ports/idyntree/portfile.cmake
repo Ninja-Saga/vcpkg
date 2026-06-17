@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO robotology/idyntree
     REF "v${VERSION}"
-    SHA512 36b7fa58e3a3e773dd792d5fe62e4fd16c2265e1ed3ba7b2906fcf19e3f590c0a782beea63f443cb354919b3c9a91b370d3935ef1a39241a5b9be0f506c8a0c9
+    SHA512 bfcdddebb2ae3d5b9e75cea799d4dfb6ad745d26eb220419c9795c30397ee400dce7669546fe78aadbab49e29be48b3ecece7bb972c1032d04f6b621a1d5bcf0
     HEAD_REF master
 )
 
@@ -26,7 +26,6 @@ vcpkg_cmake_configure(
         -DIDYNTREE_USES_ICUB_MAIN:BOOL=OFF
         -DIDYNTREE_USES_ALGLIB:BOOL=OFF
         -DIDYNTREE_USES_WORHP:BOOL=OFF
-        -DIDYNTREE_COMPILE_TESTS=OFF
 )
 
 vcpkg_cmake_install()

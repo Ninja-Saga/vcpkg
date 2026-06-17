@@ -14,7 +14,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO OGRECave/ogre
     REF "v${VERSION}"
-    SHA512 adadf0ce8510515c7519b87b502090c4a8d6694af0850ebd4a030d2dda497978eeb811746c74aa0cd1dc41adc0bf5f04fe38d02eb4ff03a56999c6635efe1e0e
+    SHA512 74c83cd4248bce7c8ee603845e753acde0fe2efaa8edb5f3f0205bc43534d9334acd3e16c0f3836888aa77fc0ed43f739184181548509c59389aac494dac722b
     HEAD_REF master
     PATCHES
         fix-dependencies.patch
@@ -22,6 +22,7 @@ vcpkg_from_github(
         swig-python-polyfill.patch
         pkgconfig.patch
         same-install-rules-all-platforms.patch
+        cmake4.patch
 )
 
 file(REMOVE "${SOURCE_PATH}/CMake/Packages/FindOpenEXR.cmake")
@@ -57,9 +58,6 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
 
 if("java" IN_LIST FEATURES OR "python" IN_LIST FEATURES OR "csharp" IN_LIST FEATURES)
     list(APPEND FEATURE_OPTIONS "-DCMAKE_REQUIRE_FIND_PACKAGE_SWIG=ON")
-endif()
-
-if(CMAKE_REQUIRE_FIND_PACKAGE_SWIG)
     vcpkg_find_acquire_program(SWIG)
     vcpkg_list(APPEND FEATURE_OPTIONS "-DSWIG_EXECUTABLE=${SWIG}")
 endif()
@@ -128,10 +126,10 @@ vcpkg_fixup_pkgconfig()
 
 if(NOT VCPKG_BUILD_TYPE)
     vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/debug/etc/${PORT}/resources.cfg" "=../../share" "=../../../share")
-    vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/debug/etc/${PORT}/resources.cfg" "[Tests]\nFileSystem=${CURRENT_PACKAGES_DIR}/debug/Tests/Media" "")
-    vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/${PORT}/OgreTargets-debug.cmake" "${_IMPORT_PREFIX}/plugins" "${_IMPORT_PREFIX}/debug/plugins")
+    vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/debug/etc/${PORT}/resources.cfg" "[Tests]\nFileSystem=${CURRENT_PACKAGES_DIR}/debug/Tests/Media" "" IGNORE_UNCHANGED)
+    vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/${PORT}/OgreTargets-debug.cmake" "${_IMPORT_PREFIX}/plugins" "${_IMPORT_PREFIX}/debug/plugins" IGNORE_UNCHANGED)
 endif()
-vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/etc/${PORT}/resources.cfg" "[Tests]\nFileSystem=${CURRENT_PACKAGES_DIR}/Tests/Media" "")
+vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/etc/${PORT}/resources.cfg" "[Tests]\nFileSystem=${CURRENT_PACKAGES_DIR}/Tests/Media" "" IGNORE_UNCHANGED)
 
 file(REMOVE_RECURSE
     "${CURRENT_PACKAGES_DIR}/etc/ogre/samples.cfg"

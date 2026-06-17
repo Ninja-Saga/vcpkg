@@ -1,22 +1,26 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO radarsat1/liblo
-    REF 840ed69b1d669a1ce587eb592746e3dff6985d76 # 0.31
-    SHA512 c84ab8ac874595df29fd121fff6ddaa670bcc31e7ca4e5cc0f35092032c9f648cd890bc7eea0152af87b842f8cc7804505ac84a13bac8a5d40e43039efa4aa2d
+    REF "${VERSION}"
+    SHA512 c9a1247213533f8d52a7ec71be884aa7595ace2575ed805dc35b2cc5fd93bed899d2a339291f142f440a6dea0747966cf847037b86b3981e44f6dd0c28dbba79
     HEAD_REF master
 )
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}/cmake"
-    OPTIONS -DTHREADING=1
+    OPTIONS
+        -DTHREADING=ON
+        -DWITH_STATIC=ON
+        -DWITH_TESTS=OFF
 )
 
 vcpkg_cmake_install()
 
 # Install needed files into package directory
 vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/liblo)
+vcpkg_fixup_pkgconfig()
 
-vcpkg_copy_tools(TOOL_NAMES oscsend oscdump AUTO_CLEAN)
+vcpkg_copy_tools(TOOL_NAMES oscsend oscdump oscsendfile AUTO_CLEAN)
 
 # Remove unnecessary files
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
@@ -26,6 +30,4 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL static)
 endif()
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
-
-vcpkg_fixup_pkgconfig()
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING")

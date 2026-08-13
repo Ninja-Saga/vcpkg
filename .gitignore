@@ -15,6 +15,7 @@
 /server-optimized
 /client
 /azeroth
+reviews*
 
 # fuzzing
 sync_dir*
